@@ -1,9 +1,8 @@
-# USAGE in your configuration.nix.
-# Update devices to match your hardware.
-# {
-#  imports = [ ./disko-config.nix ];
-#  disko.devices.disk.main.device = "/dev/sda";
-# }
+# Set it for my NVME
+{
+  imports = [ ./disko-config.nix ];
+  disko.devices.disk.main.device = "/dev/nvme0n1";
+}
 {
   disko.devices = {
     disk = {
