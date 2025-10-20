@@ -30,18 +30,18 @@
       # This is the list of blueprints that will be assembled into the final system.
       modules = [
         # The Disko module itself, which knows how to read disko configs.
-        disko.nixosModules.disko,
+        disko.nixosModules.disko
         # Your custom disk layout.
-        ./disko/disko-config.nix,
+        ./disko/disko-config.nix
 
         # The Impermanence module itself.
-        impermanence.nixosModules.impermanence,
+        impermanence.nixosModules.impermanence
 
         # Main system configuration blueprint.
-        ./configuration.nix,
+        ./configuration.nix
 
         # The Home Manager module itself.
-        home-manager.nixosModules.home-manager,
+        home-manager.nixosModules.home-manager
         {
           # This section configures Home Manager for our user
           home-manager.useGlobalPkgs = true;
