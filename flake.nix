@@ -1,92 +1,93 @@
 {
-
-inputs.nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-inputs.disko.url = "github:nix-community/disko/latest";
-inputs.disko.inputs.nixpkgs.follows = "nixpkgs";
-
-outputs = {self, disko, nixpkgs}: {
-nixosConfigurations.iphone6s = nixpkgs.legacyPackages.x86_64-linux.nixos [
-./configuration.nix
-# Set it for my NVME
-disko.nixosModules.disko
-{
-  disko.devices = {
-    disk = {
-      main = {
-	device = "/dev/nvme0n1";
-        type = "disk";
-        content = {
-          type = "gpt";
-          partitions = {
-            ESP = {
-              size = "1G";
-              type = "EF00";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+  inputs.disko.url = "github:nix-community/disko/latest";
+  inputs.disko.inputs.nixpkgs.follows = "nixpkgs";
+  
+  outputs = {self, disko, nixpkgs}: {
+    nixosConfigurations.iphone6s = nixpkgs.legacyPackages.x86_64-linux.nixos [
+      ./configuration.nix
+      disko.nixosModules.disko
+      {
+        disko.devices = {
+          disk = {
+            main = {
+              device = "/dev/nvme0n1";
+              type = "disk";
               content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-                mountOptions = [ "umask=0077" ];
+                type = "gpt";
+                partitions = {
+		  MBR = {
+		    type = "EF02"; # for grub
+   	            size = "1M";
+                    priority = 1; # Grub partition must be the first
+		   };
+                  ESP = {
+                    size = "1G";
+                    type = "EF00";
+                    content = {
+                      type = "filesystem";
+                      format = "vfat";
+                      mountpoint = "/boot";
+                      mountOptions = [ "umask=0077" ];
+                    };
+                  };
+                  luks = {
+                    size = "100%";
+                    content = {
+                      type = "luks";
+                      name = "crypted";
+                      content = {
+                        type = "zfs";
+                        pool = "zroot";
+                      };
+                    };
+                  };
+                };
               };
             };
-			# Encrypted luks partition instead of raw zfs
-            luks = {
-          size = "100%";
-          content = {
-            type = "luks";
-            name = "crypted"; # This name creates /dev/mapper/crypted
-            # The actual ZFS pool will be created *inside* this container.
-            content = {
-              type = "zfs";
-              pool = "zroot";
+          };
+          zpool = {
+            zroot = {
+              type = "zpool";
+              rootFsOptions = {
+                acltype = "posixacl";
+                atime = "off";
+                compression = "zstd";
+                mountpoint = "none";
+                xattr = "sa";
+              };
+              options.ashift = "12";
+              datasets = {
+                "local" = {
+                  type = "zfs_fs";
+                  options.mountpoint = "none";
+                };
+                "local/home" = {
+                  type = "zfs_fs";
+                  mountpoint = "/home";
+                  options."com.sun:auto-snapshot" = "true";
+                };
+                "local/nix" = {
+                  type = "zfs_fs";
+                  mountpoint = "/nix";
+                  options."com.sun:auto-snapshot" = "false";
+                };
+                "local/persist" = {
+                  type = "zfs_fs";
+                  mountpoint = "/persist";
+                  options."com.sun:auto-snapshot" = "false";
+                };
+                "local/root" = {
+                  type = "zfs_fs";
+                  mountpoint = "/";
+                  options."com.sun:auto-snapshot" = "false";
+                  postCreateHook = "zfs list -t snapshot -H -o name | grep -E '^zroot/local/root@blank$' || zfs snapshot zroot/local/root@blank";
+                };
+              };
             };
           };
         };
-      };
-    };
+      }
+    ];
   };
-};    
-	  zpool = {
-      zroot = {
-        type = "zpool";
-        rootFsOptions = {
-          # https://wiki.archlinux.org/title/Install_Arch_Linux_on_ZFS
-          acltype = "posixacl";
-          atime = "off";
-          compression = "zstd";
-          mountpoint = "none";
-          xattr = "sa";
-        };
-        options.ashift = "12";
-
-        datasets = {
-          "local" = {
-            type = "zfs_fs";
-            options.mountpoint = "none";
-          };
-          "local/home" = {
-            type = "zfs_fs";
-            mountpoint = "/home";
-            # Used by services.zfs.autoSnapshot options.
-            options."com.sun:auto-snapshot" = "true";
-          };
-          "local/nix" = {
-            type = "zfs_fs";
-            mountpoint = "/nix";
-            options."com.sun:auto-snapshot" = "false";
-          };
-          "local/persist" = {
-            type = "zfs_fs";
-            mountpoint = "/persist";
-            options."com.sun:auto-snapshot" = "false";
-          };
-          "local/root" = {
-            type = "zfs_fs";
-            mountpoint = "/";
-            options."com.sun:auto-snapshot" = "false";
-            postCreateHook = "zfs list -t snapshot -H -o name | grep -E '^zroot/local/root@blank$' || zfs snapshot zroot/local/root@blank";
-          };
-        };
-      };
-    };
-  };
-};}
+}

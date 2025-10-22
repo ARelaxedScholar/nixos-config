@@ -4,45 +4,30 @@
   imports =
     [ 
       ./hardware-configuration.nix
-      ./disko/disko-config.nix
     ];
 
   # Enabling the experimenal features
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.systemd-boot.enable = false;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport = true;
+  boot.loader.grub.efiInstallAsRemovable = lib.mkForce false;
+  boot.loader.efi.canTouchEfiVariables= lib.mkForce true;
 
   # Use latest kernel.
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages;
 
   networking.hostName = "iphone6s"; 
   networking.networkmanager.enable = true;  
+  networking.hostId = "deadbeef";
 
   # Set your time zone.
   time.timeZone = "America/New_York";
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
-  console = {
-    font = "Lat2-Terminus16";
-    keyMap = "us";
-    useXkbConfig = true; # use xkb.options in tty.
-  };
-
-  # Enable the X11 windowing system.
-  # services.xserver.enable = true;
-
-  # Grub stuff
-  boot.loader.grub.enable = true;
-  boot.loader.efiSupport = true;
-  boot.loader.grub.efiInstallAsRemovable = true;
-  
-
-  # Configure keymap in X11
-  services.xserver.xkb.layout = "us";
-  services.xserver.xkb.options = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -62,29 +47,17 @@
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
-      reaper
-      obs
+      obs-studio
     ];
   };
 
   programs.firefox.enable = true;
-  programs.nixvim.enable = true;
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
     vim 
     wget
   ];
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
