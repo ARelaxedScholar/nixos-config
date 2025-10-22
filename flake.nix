@@ -2,7 +2,6 @@
   description = "ARelaxedScholar's NixOS System Flake";
   
    inputs = {
-    # The main package set and NixOS modules. We use unstable for newer packages.
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # The Disko module for declarative disk partitioning.
@@ -29,21 +28,12 @@
 
       # This is the list of blueprints that will be assembled into the final system.
       modules = [
-        # The Disko module itself, which knows how to read disko configs.
         disko.nixosModules.disko
-        # Your custom disk layout.
         ./disko/disko-config.nix
-
-        # The Impermanence module itself.
         impermanence.nixosModules.impermanence
-
-        # Main system configuration blueprint.
         ./configuration.nix
-
-        # The Home Manager module itself.
         home-manager.nixosModules.home-manager
         {
-          # This section configures Home Manager for our user
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.user = import ./home.nix;
