@@ -1,26 +1,34 @@
-{ inputs, config, lib, pkgs, ... }:
+{
+  inputs,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [ 
-      ./hardware-configuration.nix
-    ];
+  imports = [
+    ./hardware-configuration.nix
+  ];
 
   # Enabling the experimenal features
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = false;
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.efiInstallAsRemovable = lib.mkForce false;
-  boot.loader.efi.canTouchEfiVariables= lib.mkForce true;
+  boot.loader.efi.canTouchEfiVariables = lib.mkForce true;
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages;
 
-  networking.hostName = "iphone6s"; 
-  networking.networkmanager.enable = true;  
+  networking.hostName = "iphone6s";
+  networking.networkmanager.enable = true;
   networking.hostId = "deadbeef";
 
   # Set your time zone.
@@ -37,12 +45,13 @@
     enable = true;
     pulse.enable = true;
   };
-  
+
   # Enable Hyprland
   programs.hyprland = {
-	enable = true;
- 	package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-	portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+    enable = true;
+    package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+    portalPackage =
+      inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   };
   programs.waybar.enable = true;
 
@@ -67,23 +76,22 @@
     eza
     htop
     zoxide
-    vim 
+    vim
     wget
     git
     kitty
     zed-editor
-    treefmt
+    nixfmt-tree
+    nixfmt
   ];
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
-
   # Copy the NixOS configuration file and link it from the resulting system
   system.copySystemConfiguration = false;
 
   # Should never change this
-  system.stateVersion = "25.05"; 
+  system.stateVersion = "25.05";
 
 }
-
