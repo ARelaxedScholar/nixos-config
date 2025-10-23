@@ -21,16 +21,16 @@
    	            size = "1M";
                     priority = 1; # Grub partition must be the first
 		   };
-                  ESP = {
-                    size = "1G";
-                    type = "EF00";
-                    content = {
-                      type = "filesystem";
-                      format = "vfat";
-                      mountpoint = "/boot";
-                      mountOptions = [ "umask=0077" ];
-                    };
-                  };
+#                  ESP = {
+ #                   size = "1G";
+  #                  type = "EF00";
+   #                 content = {
+    #                  type = "filesystem";
+     #                 format = "vfat";
+      #                mountpoint = "/boot";
+       #               mountOptions = [ "umask=0077" ];
+        #            };
+         #         };
                   luks = {
                     size = "100%";
                     content = {

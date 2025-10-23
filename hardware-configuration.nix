@@ -32,9 +32,9 @@
     { device = "zroot/local/persist";
       fsType = "zfs";
     };
-
+ 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/BB5A-1FEE";
+   { device = "/dev/disk/by-uuid/BB5A-1FEE";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };

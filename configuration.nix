@@ -56,6 +56,9 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    eza
+    htop
+    zoxide
     vim 
     wget
   ];
@@ -65,7 +68,7 @@
 
 
   # Copy the NixOS configuration file and link it from the resulting system
-  system.copySystemConfiguration = true;
+  system.copySystemConfiguration = false;
 
   # Should never change this
   system.stateVersion = "25.05"; 
