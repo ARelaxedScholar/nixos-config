@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ inputs, config, lib, pkgs, ... }:
 
 {
   imports =
@@ -37,6 +37,14 @@
     enable = true;
     pulse.enable = true;
   };
+  
+  # Enable Hyprland
+  programs.hyprland = {
+	enable = true;
+ 	package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+	portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+  };
+  programs.waybar.enable = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
@@ -61,6 +69,10 @@
     zoxide
     vim 
     wget
+    git
+    kitty
+    zed-editor
+    treefmt
   ];
 
   # Enable the OpenSSH daemon.

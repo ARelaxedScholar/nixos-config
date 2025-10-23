@@ -1,10 +1,14 @@
 {
-  inputs.nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-  inputs.disko.url = "github:nix-community/disko/latest";
-  inputs.disko.inputs.nixpkgs.follows = "nixpkgs";
+  inputs = {
+  nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+  disko.url = "github:nix-community/disko/latest";
+  disko.inputs.nixpkgs.follows = "nixpkgs";
+  hyprland.url = "github:hyprwm/Hyprland";};
   
-  outputs = {self, disko, nixpkgs}: {
-    nixosConfigurations.iphone6s = nixpkgs.legacyPackages.x86_64-linux.nixos [
+  outputs = {self, disko, hyprland, nixpkgs} @ inputs: {
+    nixosConfigurations.iphone6s = nixpkgs.lib.nixosSystem {
+   specialArgs = {inherit inputs;}; 
+   modules = [
       ./configuration.nix
       disko.nixosModules.disko
       {
@@ -21,16 +25,6 @@
    	            size = "1M";
                     priority = 1; # Grub partition must be the first
 		   };
-#                  ESP = {
- #                   size = "1G";
-  #                  type = "EF00";
-   #                 content = {
-    #                  type = "filesystem";
-     #                 format = "vfat";
-      #                mountpoint = "/boot";
-       #               mountOptions = [ "umask=0077" ];
-        #            };
-         #         };
                   luks = {
                     size = "100%";
                     content = {
@@ -88,6 +82,6 @@
           };
         };
       }
-    ];
+    ];};
   };
 }
