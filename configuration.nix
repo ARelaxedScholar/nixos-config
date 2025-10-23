@@ -53,7 +53,10 @@
     portalPackage =
       inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
   };
-  programs.waybar.enable = true;
+
+  programs.waybar = {
+    enable = true;
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
@@ -66,6 +69,8 @@
     packages = with pkgs; [
       tree
       obs-studio
+      mpv
+      anki
     ];
   };
 
