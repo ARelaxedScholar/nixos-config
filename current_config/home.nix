@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+imports = [
+inputs.walker.homeManagerModules.walker
+./modules
+];
   services = {
     # blue light filter
     gammastep = {
