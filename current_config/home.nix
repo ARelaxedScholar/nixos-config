@@ -2,7 +2,7 @@
 
 {
 imports = [
-inputs.walker.homeManagerModules.walker
+#inputs.walker.homeManagerModules.walker
 ./modules/walker.nix
 ];
   services = {
