@@ -1,5 +1,5 @@
-{ disko, ... }:
-disko.nixosModules.disko {
+{ ... }:
+{
   disko.devices = {
     disk = {
       main = {

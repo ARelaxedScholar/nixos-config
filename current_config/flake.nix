@@ -25,11 +25,11 @@
 
         modules = [
           ./configuration.nix
+          disko.nixosModules.disko
           ./disko-configuration.nix
-          ./home.nix
-          home-manager.nixosMOdules.home-manager
+          home-manager.nixosModules.home-manager
           {
-            home-manager.useUserGlobalPkgs = true;
+            home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
             home-manager.users.user = {
