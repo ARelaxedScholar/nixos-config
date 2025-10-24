@@ -81,6 +81,7 @@
     eza
     htop
     zoxide
+    fastfetch
     vim
     wget
     git
@@ -88,6 +89,7 @@
     zed-editor
     nixfmt-tree
     nixfmt
+    btop
   ];
 
   # Enable the OpenSSH daemon.
