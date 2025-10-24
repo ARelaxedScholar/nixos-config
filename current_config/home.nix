@@ -3,7 +3,7 @@
 {
 imports = [
 inputs.walker.homeManagerModules.walker
-./modules
+./modules/walker.nix
 ];
   services = {
     # blue light filter
