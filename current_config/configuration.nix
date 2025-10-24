@@ -34,6 +34,10 @@
   # Set your time zone.
   time.timeZone = "America/New_York";
 
+  services = {
+
+  };
+
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
@@ -67,12 +71,41 @@
     hashedPassword = "$6$E/iKuuVKtIZtoU30$l/3BBHa.MAxX5P9Nr/j8r9DjzbWX2F6H8KfwigrTvnQMFz7yG99iO9NSSNiR2hQ.S9gupox8LjfGiEA6cWuL5/";
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
+      walker
       tree
       obs-studio
       mpv
       anki
     ];
   };
+
+  #  programs.walker = {
+  #    enable = true;
+  #    runAsService = true;
+  #
+  #    config = {
+  #      theme = "Acnologia";
+  #      placeholders."default" = {
+  #        input = "Search";
+  #        list = "Example";
+  #      };
+  #      providers.prefixes = [
+  #        {
+  #          provider = "websearch";
+  #          prefix = "+";
+  #        }
+  #        {
+  #          provider = "providerlist";
+  #          prefix = "_";
+  #        }
+  #      ];
+  #      keybinds.quick_activate = [
+  #        "F1"
+  #        "F2"
+  #        "F3"
+  #      ];
+  #    };
+  #  };
 
   programs.firefox.enable = true;
 
@@ -90,6 +123,7 @@
     nixfmt-tree
     nixfmt
     btop
+    gammastep
   ];
 
   # Enable the OpenSSH daemon.
