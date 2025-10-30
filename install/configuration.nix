@@ -68,9 +68,6 @@
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
       tree
-      obs-studio
-      mpv
-      anki
     ];
   };
 
@@ -78,18 +75,8 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
-    eza
-    htop
-    zoxide
-    fastfetch
     vim
-    wget
     git
-    kitty
-    zed-editor
-    nixfmt-tree
-    nixfmt
-    btop
   ];
 
   # Enable the OpenSSH daemon.
