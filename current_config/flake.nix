@@ -29,7 +29,7 @@
         specialArgs = { inherit inputs; };
 
         modules = [
-		# My main (and for the time being only configs)
+          # My main (and for the time being only configs)
           ./hosts/iphone6s/configuration.nix
           disko.nixosModules.disko
           ./hosts/iphone6s/disko-configuration.nix

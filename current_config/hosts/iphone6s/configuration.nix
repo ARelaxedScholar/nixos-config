@@ -88,6 +88,10 @@
     nixfmt
     btop
     gammastep
+
+    nh
+    nom
+    nvd
   ];
 
   # Enable the OpenSSH daemon.
