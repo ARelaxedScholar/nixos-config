@@ -18,7 +18,14 @@
     anki
     obsidian
     reaper
+    # fonts
+    noto-fonts-cjk-sans # <for chinese, japanese, korean
+    ipafont
+    kochi-substitute
+    noto-fonts
+    noto-fonts-emoji
   ];
+
   services = {
     # blue light filter
     gammastep = {
