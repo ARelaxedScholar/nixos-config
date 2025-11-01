@@ -8,7 +8,16 @@
 {
   imports = [
     #inputs.walker.homeManagerModules.walker
-    ./modules/walker.nix
+    ../../modules/walker.nix
+  ];
+
+  home.packages = with pkgs; [
+    tree
+    obs-studio
+    mpv
+    anki
+    obsidian
+    reaper
   ];
   services = {
     # blue light filter

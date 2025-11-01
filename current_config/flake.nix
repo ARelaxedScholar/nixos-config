@@ -29,9 +29,10 @@
         specialArgs = { inherit inputs; };
 
         modules = [
-          ./configuration.nix
+		# My main (and for the time being only configs)
+          ./hosts/iphone6s/configuration.nix
           disko.nixosModules.disko
-          ./disko-configuration.nix
+          ./hosts/iphone6s/disko-configuration.nix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -41,7 +42,7 @@
             home-manager.users.user = {
               imports = [
                 walker.homeManagerModules.default
-                ./home.nix
+                ./hosts/iphone6s/home.nix
               ];
             };
           }
