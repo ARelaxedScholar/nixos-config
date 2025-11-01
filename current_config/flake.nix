@@ -8,10 +8,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-walker = {
-url  = "github:abenz1267/walker";
-inputs.nixpkgs.follows = "nixpkgs";
-};
+    walker = {
+      url = "github:abenz1267/walker";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -21,7 +21,7 @@ inputs.nixpkgs.follows = "nixpkgs";
       hyprland,
       nixpkgs,
       home-manager,
-walker,
+      walker,
       ...
     }@inputs:
     {
@@ -36,12 +36,13 @@ walker,
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-home-manager.extraSpecialArgs = { inherit inputs; };
+            home-manager.extraSpecialArgs = { inherit inputs; };
 
             home-manager.users.user = {
-              imports = [ 
-walker.homeManagerModules.default
-./home.nix ];
+              imports = [
+                walker.homeManagerModules.default
+                ./home.nix
+              ];
             };
           }
         ];

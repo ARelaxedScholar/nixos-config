@@ -5,7 +5,6 @@
   pkgs,
   ...
 }:
-
 {
   imports = [
     ./hardware-configuration.nix
@@ -24,6 +23,9 @@
   boot.loader.grub.efiInstallAsRemovable = lib.mkForce false;
   boot.loader.efi.canTouchEfiVariables = lib.mkForce true;
 
+  # bluetooth
+  hardware.bluetooth.enable = true;
+
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages;
 
@@ -33,10 +35,6 @@
 
   # Set your time zone.
   time.timeZone = "America/New_York";
-
-  services = {
-
-  };
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
@@ -77,11 +75,11 @@
       mpv
       anki
       obsidian
-reaper
+      reaper
     ];
   };
 
-    programs.firefox.enable = true;
+  programs.firefox.enable = true;
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
