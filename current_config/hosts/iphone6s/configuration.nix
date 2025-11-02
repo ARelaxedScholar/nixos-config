@@ -57,6 +57,14 @@
     xwayland.enable = true;
   };
 
+  # Enable the main xdg-desktop-portal service
+  xdg.portal = {
+    enable = true;
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+    ];
+  };
+
   programs.waybar = {
     enable = true;
   };
