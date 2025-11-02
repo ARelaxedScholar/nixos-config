@@ -8,7 +8,6 @@
 {
   imports = [
     #inputs.walker.homeManagerModules.walker
-    ../../modules/walker.nix
     ../../modules/hyprland.nix
   ];
 
@@ -25,6 +24,7 @@
     kochi-substitute
     noto-fonts
     noto-fonts-color-emoji
+    rofi
   ];
 
   services = {
