@@ -24,7 +24,7 @@
     ipafont
     kochi-substitute
     noto-fonts
-    noto-fonts-emoji
+    noto-fonts-color-emoji
   ];
 
   services = {

@@ -25,6 +25,14 @@
         "F2"
         "F3"
       ];
+      modules = [
+        "applications"
+        "calculator"
+        "files"
+        "runner"
+        "websearch"
+        "clipboard"
+      ];
     };
   };
   nix.settings = {

@@ -16,7 +16,10 @@
         "$fileManager" = "dolphin";
 
         # stuff that needs to be run
-        "exec-once" = [ "waybar" ];
+        "exec-once" = [
+          "waybar"
+          "walker --gapplication-service"
+        ];
 
       };
 
