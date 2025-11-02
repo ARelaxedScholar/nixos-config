@@ -9,6 +9,7 @@
   imports = [
     #inputs.walker.homeManagerModules.walker
     ../../modules/walker.nix
+    ../../modules/hyprland.nix
   ];
 
   home.packages = with pkgs; [
