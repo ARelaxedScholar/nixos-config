@@ -1,8 +1,24 @@
 { pkgs, ... }:
 {
+  home.packages = with pkgs; [
+    networkmanager
+    pavucontrol
+  ];
+
   wayland.windowManager = {
     hyprland = {
       enable = true;
+      settings = {
+        monitor = [ ",preferred,auto,auto" ];
+
+        # programs
+        "$terminal" = "kitty";
+        "$fileManager" = "dolphin";
+
+        # stuff that needs to be run
+        "exec-once" = [ "waybar" ];
+
+      };
 
       extraConfig = ''
         # #######################################################################################
@@ -23,13 +39,6 @@
         # Create your files separately and then link them to this file like this:
         # source = ~/.config/hypr/myColors.conf
 
-
-        ################
-        ### MONITORS ###
-        ################
-
-        # See https://wiki.hypr.land/Configuring/Monitors/
-        monitor=,preferred,auto,auto
 
 
         ###################
