@@ -295,23 +295,8 @@
         windowrule = suppressevent maximize, class:.*
 
         # Fix some dragging issues with XWayland
-        windowrule = nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0    '';
-    };
-  };
-
-  xdg.portal = {
-    enable = true;
-    extraPortals =
-      with pkgs;
-      lib.mkForce [
-        kdePackages.xdg-desktop-portal-kde
-        xdg-desktop-portal-hyprland
-      ];
-
-    config = {
-      common = {
-        "org.freedesktop.impl.portal.FileChooser" = "kde";
-      };
+        windowrule = nofocus,class:^$,title:^$,xwayland:1,floating:1,fullscreen:0,pinned:0
+      '';
     };
   };
 }

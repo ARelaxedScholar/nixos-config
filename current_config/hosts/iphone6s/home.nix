@@ -10,6 +10,7 @@
     #inputs.walker.homeManagerModules.walker
     ../../modules/hyprland.nix
     ../../modules/zed.nix
+    ../../modules/waybar.nix
   ];
 
   home.packages = with pkgs; [
