@@ -84,7 +84,6 @@
     wget
     git
     kitty
-    zed-editor
     nixfmt-tree
     nixfmt
     btop
