@@ -25,6 +25,22 @@
       walker,
       ...
     }@inputs:
+let 
+      system = "x86_64-linux";
+      # Create an overlay to patch our broken package
+      overlay = final: prev: {
+        elephant = prev.elephant.overrideAttrs (oldAttrs: {
+          # The package's build script looks for this environment variable
+          # to know which plugins to skip building.
+          ELEPHANT_EXCLUDED_PROVIDERS = "nirisessions";
+        });
+      };
+      # Apply the overlay to nixpkgs
+      pkgs = import nixpkgs {
+        inherit system;
+        overlays = [ overlay ];
+      };
+in
     {
       nixosConfigurations.iphone6s = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
@@ -46,6 +62,8 @@
                 ./hosts/iphone6s/home.nix
               ];
             };
+
+nixpkgs.pkgs = pkgs;
           }
         ];
       };
