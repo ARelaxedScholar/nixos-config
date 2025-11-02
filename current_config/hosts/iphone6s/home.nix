@@ -24,7 +24,8 @@
     kochi-substitute
     noto-fonts
     noto-fonts-color-emoji
-    rofi
+    wofi
+    kdePackages.dolphin
   ];
 
   services = {
