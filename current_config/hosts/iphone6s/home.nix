@@ -7,11 +7,27 @@
 
 {
   imports = [
-    #inputs.walker.homeManagerModules.walker
     ../../modules/hyprland.nix
     ../../modules/zed.nix
     ../../modules/waybar.nix
   ];
+
+  # Ensure portal config files are created
+  xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
+    [preferred]
+    default=gtk;hyprland
+    org.freedesktop.impl.portal.FileChooser=gtk
+    org.freedesktop.impl.portal.Screenshot=hyprland
+    org.freedesktop.impl.portal.ScreenCast=hyprland
+  '';
+
+  xdg.configFile."xdg-desktop-portal/hyprland-portals.conf".text = ''
+    [preferred]
+    default=gtk;hyprland
+    org.freedesktop.impl.portal.FileChooser=gtk
+    org.freedesktop.impl.portal.Screenshot=hyprland
+    org.freedesktop.impl.portal.ScreenCast=hyprland
+  '';
 
   home.packages = with pkgs; [
     tree
@@ -21,7 +37,7 @@
     obsidian
     reaper
     # fonts
-    noto-fonts-cjk-sans # <for chinese, japanese, korean
+    noto-fonts-cjk-sans
     ipafont
     kochi-substitute
     noto-fonts

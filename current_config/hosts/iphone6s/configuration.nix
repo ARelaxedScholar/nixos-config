@@ -10,7 +10,7 @@
     ./hardware-configuration.nix
   ];
 
-  # Enabling the experimenal features
+  # Enabling the experimental features
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -54,39 +54,34 @@
     xwayland.enable = true;
   };
 
+  # XDG Portal configuration - CRITICAL for file dialogs
   xdg.portal = {
     enable = true;
+    wlr.enable = false;
     extraPortals = with pkgs; [
-      kdePackages.xdg-desktop-portal-kde
       xdg-desktop-portal-hyprland
+      xdg-desktop-portal-gtk
     ];
-    config = {
-      common = {
-        default = [
-          "kde"
-          "hyprland"
-        ];
-        "org.freedesktop.impl.portal.FileChooser" = "kde";
-      };
-      hyprland = {
-        default = [
-          "hyprland"
-          "kde"
-        ];
-      };
-    };
-    xdgOpenUsePortal = true;
+  };
+
+  # Ensure proper environment variables for Wayland
+  environment.sessionVariables = {
+    NIXOS_OZONE_WL = "1";
+    XDG_CURRENT_DESKTOP = "Hyprland";
+    XDG_SESSION_TYPE = "wayland";
+    XDG_SESSION_DESKTOP = "Hyprland";
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
   services.libinput.enable = true;
 
   nixpkgs.config.allowUnfree = true;
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  
+  # Define a user account. Don't forget to set a password with 'passwd'.
   users.users.user = {
     isNormalUser = true;
     hashedPassword = "$6$E/iKuuVKtIZtoU30$l/3BBHa.MAxX5P9Nr/j8r9DjzbWX2F6H8KfwigrTvnQMFz7yG99iO9NSSNiR2hQ.S9gupox8LjfGiEA6cWuL5/";
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" ]; # Enable 'sudo' for the user.
   };
 
   programs.firefox.enable = true;
@@ -109,15 +104,21 @@
     nh
     nom
     nvd
+    
+    # Portal debugging tools
+    xdg-utils
+    dbus
   ];
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+
+  # Ensure D-Bus is running properly
+  services.dbus.enable = true;
 
   # Copy the NixOS configuration file and link it from the resulting system
   system.copySystemConfiguration = false;
 
   # Should never change this
   system.stateVersion = "25.05";
-
 }
