@@ -8,11 +8,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    elephant.url = "github:abenz1267/elephant";
-    walker = {
-      url = "github:abenz1267/walker";
-      inputs.elephant.follows = "elephant";
-    };
+    evil-helix.url = "github:usagi-flow/evil-helix";
   };
 
   outputs =
@@ -22,7 +18,7 @@
       hyprland,
       nixpkgs,
       home-manager,
-      walker,
+      evil-helix,
       ...
     }@inputs:
     {
@@ -42,7 +38,6 @@
 
             home-manager.users.user = {
               imports = [
-                walker.homeManagerModules.default
                 ./hosts/iphone6s/home.nix
               ];
             };

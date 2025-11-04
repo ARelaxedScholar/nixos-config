@@ -16,12 +16,16 @@
     extraPackages = [ pkgs.nixd ];
 
     userSettings = {
+      # Use Zed's built-in file picker instead of system portal
+      use_system_path_prompts = false;
+
       vim_mode = true;
       vim = {
+        use_system_clipboard = "always";
+        use_multiline_find = true;
         enable_vim_sneak = true;
       };
       theme = "Dracula";
-      # had to force here due to conflicts
       ui_font_size = lib.mkForce 12;
       buffer_font_size = lib.mkForce 14;
       relative_line_numbers = true;
@@ -38,10 +42,6 @@
         enabled = true;
         coloring = "indent_aware";
       };
-      # centered_layout = {
-      #   left_padding = "0.15";
-      #   right_padding = "0.15";
-      # };
       inlay_hints = {
         enabled = true;
       };
@@ -96,7 +96,7 @@
         };
         env = {
           EDITOR = "zed --wait";
-          TERM = "ghostty"; # or kitty etc
+          TERM = "kitty";
         };
         font_family = "FiraCode Nerd Font Mono";
         font_features = null;
@@ -109,7 +109,6 @@
         };
         working_directory = "current_project_directory";
       };
-      # File syntax highlighting
       file_types = {
         JSON = [
           "json"
@@ -137,9 +136,7 @@
         };
 
         "rust-analyzer" = {
-          # Quote the LSP name
           binary = {
-            # run `which rust-analyzer`
             path = "/nix/store/3i6z4bh7ffyj99drw554nsmnspyizky6-rust-default-1.87.0-nightly-2025-02-18/bin/rust-analyzer";
           };
           settings = {
@@ -147,7 +144,7 @@
               enable = true;
               styleLints = {
                 enable = true;
-              }; # Corrected styleLints access
+              };
             };
             checkOnSave = true;
             check = {
@@ -157,29 +154,29 @@
             cargo = {
               buildScripts = {
                 enable = true;
-              }; # Corrected buildScripts access
+              };
               features = "all";
             };
             inlayHints = {
               bindingModeHints = {
                 enable = true;
-              }; # Corrected access
+              };
               closureStyle = "rust_analyzer";
               closureReturnTypeHints = {
                 enable = "always";
-              }; # Corrected access
+              };
               discriminantHints = {
                 enable = "always";
-              }; # Corrected access
+              };
               expressionAdjustmentHints = {
                 enable = "always";
-              }; # Corrected access
+              };
               implicitDrops = {
                 enable = true;
               };
               lifetimeElisionHints = {
                 enable = "always";
-              }; # Corrected access
+              };
               rangeExclusiveHints = {
                 enable = true;
               };
@@ -203,7 +200,6 @@
         };
 
         settings = {
-          # This is for other LSP servers, keep it separate
           dialyzerEnabled = true;
         };
       };
@@ -247,47 +243,29 @@
           "g r" = "editor::FindAllReferences";
           "] d" = "editor::GoToDiagnostic";
           "[ d" = "editor::GoToPrevDiagnostic";
-          # TODO: Go to next/prev error
           "] e" = "editor::GoToDiagnostic";
           "[ e" = "editor::GoToPrevDiagnostic";
-          # Symbol search
           "s s" = "outline::Toggle";
           "s S" = "project_symbols::Toggle";
-          # Diagnostic
           "space x x" = "diagnostics::Deploy";
-
-          # +Git
-          # Git prev/next hunk
           "] h" = "editor::GoToHunk";
           "[ h" = "editor::GoToPrevHunk";
-
-          # Buffers
-          # Switch between buffers
           "shift-h" = "pane::ActivatePrevItem";
           "shift-l" = "pane::ActivateNextItem";
-          # Close active panel
           "shift-q" = "pane::CloseActiveItem";
           "ctrl-q" = "pane::CloseActiveItem";
           "space b d" = "pane::CloseActiveItem";
-          # Close other items
           "space b o" = "pane::CloseInactiveItems";
-          # Save file
           "ctrl-s" = "workspace::Save";
-          # File finder
           "space space" = "file_finder::Toggle";
-          # Project search
           "space /" = "pane::DeploySearch";
-          # TODO: Open other files
-          # Show project panel with current file
           "space e" = "pane::RevealInProjectPanel";
         };
       }
       {
         context = "EmptyPane || SharedScreen";
         bindings = {
-          # Open file finder
           "space space" = "file_finder::Toggle";
-          # Open recent projects
           "space f p" = "projects::OpenRecent";
         };
       }
@@ -297,23 +275,20 @@
           "g c" = "editor::ToggleComments";
         };
       }
-      # Better escape
       {
         context = "Editor && vim_mode == insert && !menu";
         bindings = {
-          "j j" = "vim::NormalBefore"; # remap jj in insert mode to escape
-          "j k" = "vim::NormalBefore"; # remap jk in insert mode to escape
+          "j j" = "vim::NormalBefore";
+          "j k" = "vim::NormalBefore";
         };
       }
-      # Rename
       {
         context = "Editor && vim_operator == c";
         bindings = {
           "c" = "vim::CurrentLine";
-          "a" = "editor::ToggleCodeActions"; # zed specific
+          "a" = "editor::ToggleCodeActions";
         };
       }
-      # Toggle Terminal
       {
         context = "Workspace";
         bindings = {
@@ -329,7 +304,6 @@
           "ctrl-j" = "workspace::ActivatePaneDown";
         };
       }
-      # File panel (netrw)
       {
         context = "ProjectPanel && not_editing";
         bindings = {
@@ -340,17 +314,14 @@
           "x" = "project_panel::Cut";
           "c" = "project_panel::Copy";
           "p" = "project_panel::Paste";
-          # Close project panel as project file panel on the right
           "q" = "workspace::ToggleRightDock";
           "space e" = "workspace::ToggleRightDock";
-          # Navigate between panel
           "ctrl-h" = "workspace::ActivatePaneLeft";
           "ctrl-l" = "workspace::ActivatePaneRight";
           "ctrl-k" = "workspace::ActivatePaneUp";
           "ctrl-j" = "workspace::ActivatePaneDown";
         };
       }
-      # Panel navigation
       {
         context = "Dock";
         bindings = {

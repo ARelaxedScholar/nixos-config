@@ -30,6 +30,7 @@
   '';
 
   home.packages = with pkgs; [
+    helix
     tree
     obs-studio
     mpv
