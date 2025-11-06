@@ -8,7 +8,6 @@
 {
   imports = [
     ../../modules/hyprland.nix
-    ../../modules/zed.nix
     ../../modules/waybar.nix
   ];
 
@@ -30,7 +29,7 @@
   '';
 
   home.packages = with pkgs; [
-    helix
+    evil-helix
     tree
     obs-studio
     mpv
