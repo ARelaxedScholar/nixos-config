@@ -77,7 +77,7 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  # Define a user account. Don't forget to set a password with 'passwd'.
+  # Define my user
   users.users.user = {
     isNormalUser = true;
     hashedPassword = "$6$E/iKuuVKtIZtoU30$l/3BBHa.MAxX5P9Nr/j8r9DjzbWX2F6H8KfwigrTvnQMFz7yG99iO9NSSNiR2hQ.S9gupox8LjfGiEA6cWuL5/";
@@ -119,7 +119,7 @@
   # Ensure D-Bus is running properly
   services.dbus.enable = true;
 
-  # Copy the NixOS configuration file and link it from the resulting system
+  # Copy the NixOS configuration file and link it from the resulting system (I am using flakes)
   system.copySystemConfiguration = false;
 
   # Should never change this
