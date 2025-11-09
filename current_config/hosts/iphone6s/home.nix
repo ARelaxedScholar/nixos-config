@@ -9,6 +9,7 @@
   imports = [
     ../../modules/hyprland.nix
     ../../modules/waybar.nix
+    ../../modules/zsh.nix
   ];
 
   # Ensure portal config files are created

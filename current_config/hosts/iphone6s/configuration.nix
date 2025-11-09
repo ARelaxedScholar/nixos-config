@@ -84,6 +84,9 @@
     extraGroups = [ "wheel" ]; # Enable 'sudo' for the user.
   };
 
+  # Auto-login
+  services.getty.autologinUser = "user";
+
   programs.firefox.enable = true;
 
   # List packages installed in system profile.
