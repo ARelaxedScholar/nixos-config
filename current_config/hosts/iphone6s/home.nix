@@ -37,6 +37,7 @@
     anki
     obsidian
     reaper
+
     # fonts
     noto-fonts-cjk-sans
     ipafont

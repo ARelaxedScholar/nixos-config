@@ -15,5 +15,9 @@
     shellAliases = {
       ll = "ls -la";
     };
+
+    oh-my-zsh = {
+      enable = true;
+    };
   };
 }
