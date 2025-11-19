@@ -37,6 +37,7 @@
     anki
     obsidian
     reaper
+    zotero
 
     # fonts
     noto-fonts-cjk-sans

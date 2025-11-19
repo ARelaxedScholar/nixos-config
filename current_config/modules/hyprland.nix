@@ -8,6 +8,9 @@
   wayland.windowManager = {
     hyprland = {
       enable = true;
+      # To use those from NixOs module
+      package = null;
+      portalPackage = null;
       settings = {
         monitor = [ ",preferred,auto,auto" ];
 

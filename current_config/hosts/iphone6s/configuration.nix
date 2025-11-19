@@ -77,12 +77,18 @@
 
   nixpkgs.config.allowUnfree = true;
 
+  environment.shells = with pkgs; [ zsh ];
+  programs.zsh.enable = true;
+
   # Define my user
   users.users.user = {
     isNormalUser = true;
     hashedPassword = "$6$E/iKuuVKtIZtoU30$l/3BBHa.MAxX5P9Nr/j8r9DjzbWX2F6H8KfwigrTvnQMFz7yG99iO9NSSNiR2hQ.S9gupox8LjfGiEA6cWuL5/";
     extraGroups = [ "wheel" ]; # Enable 'sudo' for the user.
+    shell = pkgs.zsh;
   };
+  virtualisation.docker.enable = true;
+  users.users.user.extraGroups = [ "docker" ];
 
   # Auto-login
   services.getty.autologinUser = "user";
@@ -91,6 +97,7 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    docker-compose
     eza
     htop
     zoxide
