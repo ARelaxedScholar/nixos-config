@@ -30,6 +30,7 @@
   '';
 
   home.packages = with pkgs; [
+    antigravity-nix.packages.x86_64-linux.default
     evil-helix
     tree
     obs-studio
