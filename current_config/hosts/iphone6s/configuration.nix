@@ -96,6 +96,7 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    cachix
     docker-compose
     eza
     htop

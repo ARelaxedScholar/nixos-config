@@ -7,7 +7,7 @@
 
 {
   imports = [
-    ../../modules/hyprland.nix
+    ../../modules/niri.nix
     ../../modules/waybar.nix
     ../../modules/zsh.nix
   ];
@@ -15,22 +15,15 @@
   # Ensure portal config files are created
   xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
     [preferred]
-    default=gtk;hyprland
+    default=gtk
     org.freedesktop.impl.portal.FileChooser=gtk
-    org.freedesktop.impl.portal.Screenshot=hyprland
-    org.freedesktop.impl.portal.ScreenCast=hyprland
-  '';
-
-  xdg.configFile."xdg-desktop-portal/hyprland-portals.conf".text = ''
-    [preferred]
-    default=gtk;hyprland
-    org.freedesktop.impl.portal.FileChooser=gtk
-    org.freedesktop.impl.portal.Screenshot=hyprland
-    org.freedesktop.impl.portal.ScreenCast=hyprland
+    # Niri uses the GNOME portal for screencasting/screenshots
+    org.freedesktop.impl.portal.Screenshot=gnome
+    org.freedesktop.impl.portal.ScreenCast=gnome
   '';
 
   home.packages = with pkgs; [
-    antigravity-nix.packages.x86_64-linux.default
+    inputs.antigravity-nix.packages.x86_64-linux.default
     evil-helix
     tree
     obs-studio
@@ -56,7 +49,7 @@
       enable = true;
       provider = "manual";
       latitude = 45.32;
-      longitude = 77.88;
+      longitude = -77.88;
     };
   };
 
