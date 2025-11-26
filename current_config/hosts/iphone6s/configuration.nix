@@ -11,10 +11,14 @@
   ];
 
   # Enabling the experimental features
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  nix.settings = {
+    substituters = ["https://niri.cachix.org"];
+    trusted-public-keys = ["niri.cachix.org-1:Wv00m07PsuJ90V2jMZW5ajB8PxyYcnyk8TmgV0/2060="];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+  };
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = false;
@@ -84,7 +88,10 @@
   users.users.user = {
     isNormalUser = true;
     hashedPassword = "$6$E/iKuuVKtIZtoU30$l/3BBHa.MAxX5P9Nr/j8r9DjzbWX2F6H8KfwigrTvnQMFz7yG99iO9NSSNiR2hQ.S9gupox8LjfGiEA6cWuL5/";
-    extraGroups = [ "wheel" "docker"]; # Enable 'sudo' for the user.
+    extraGroups = [
+      "wheel"
+      "docker"
+    ]; # Enable 'sudo' for the user.
     shell = pkgs.zsh;
   };
   virtualisation.docker.enable = true;
