@@ -8,7 +8,7 @@
       enable = true;
       settings = {
         binds = with config.lib.niri.actions; let
-	  sh = spawn "sh" "-c";
+	  sh = spawn "zsh" "-c";
 	in {
 	  # First Key Row
 	  "Super+Space".action = spawn "${pkgs.rofi-wayland}/bin/rofi" "-show" "drun";
