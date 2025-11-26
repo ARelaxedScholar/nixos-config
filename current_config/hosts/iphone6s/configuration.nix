@@ -12,8 +12,8 @@
 
   # Enabling the experimental features
   nix.settings = {
-    substituters = ["https://niri.cachix.org"];
-    trusted-public-keys = ["niri.cachix.org-1:Wv00m07PsuJ90V2jMZW5ajB8PxyYcnyk8TmgV0/2060="];
+    substituters = [ "https://niri.cachix.org" ];
+    trusted-public-keys = [ "niri.cachix.org-1:Wv00m07PsuJ90V2jMZW5ajB8PxyYcnyk8TmgV0/2060=" ];
     experimental-features = [
       "nix-command"
       "flakes"
@@ -53,9 +53,8 @@
   };
 
   # Enable Hyprland
-  programs.hyprland = {
+  programs.niri = {
     enable = true;
-    xwayland.enable = true;
   };
 
   # XDG Portal configuration - CRITICAL for file dialogs
@@ -63,7 +62,7 @@
     enable = true;
     wlr.enable = false;
     extraPortals = with pkgs; [
-      xdg-desktop-portal-hyprland
+      xdg-desktop-portal-gnome
       xdg-desktop-portal-gtk
     ];
   };
@@ -71,9 +70,9 @@
   # Ensure proper environment variables for Wayland
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
-    XDG_CURRENT_DESKTOP = "Hyprland";
+    XDG_CURRENT_DESKTOP = "Niri";
     XDG_SESSION_TYPE = "wayland";
-    XDG_SESSION_DESKTOP = "Hyprland";
+    XDG_SESSION_DESKTOP = "Niri";
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
