@@ -8,6 +8,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    inputs.niri.nixosModules.niri
   ];
 
   # Enabling the experimental features
@@ -55,7 +56,6 @@
   # Enable Hyprland
 programs.niri = {
   enable = true;
-  package = inputs.niri.packages.${pkgs.system}.niri-unstable;
 };
 
   # XDG Portal configuration - CRITICAL for file dialogs
