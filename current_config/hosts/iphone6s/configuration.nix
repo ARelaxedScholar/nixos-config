@@ -56,6 +56,7 @@
   # Enable Hyprland
 programs.niri = {
   enable = true;
+  package = pkgs.niri;
 };
 
   # XDG Portal configuration - CRITICAL for file dialogs
