@@ -74,6 +74,7 @@ in
     enable = true;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
     polarity = "dark";
+    enableReleaseChecks = false;
   };
 
   home.stateVersion = "25.05";
