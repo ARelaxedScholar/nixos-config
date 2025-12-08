@@ -41,6 +41,8 @@ in
 
         prefer-no-csd
 
+        background-image = "/home/user/Pictures/Wallpapers/Akai.jpeg"
+
        binds {
           // Program launchers
           Mod+Space { spawn "${launcher}" "-show" "drun"; }
