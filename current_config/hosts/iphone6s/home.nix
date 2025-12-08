@@ -6,7 +6,7 @@
 }:
 
 let
-  wallpapers = builtins.readDir ./wallpapers;
+  wallpapers = builtins.readDir ../../wallpapers;
   isImage = name: builtins.match ".*\\.(jpg|jpeg|png|gif|bmp|webp)" name != null;
   wallpaperList = builtins.filter isImage (builtins.attrNames wallpapers);
   sortedWallpapers = builtins.sort (a: b: a < b) wallpaperList;
@@ -72,7 +72,7 @@ in
 
   stylix = {
     enable = true;
-    image = if selectedWallpaper != "" then ./wallpapers/${selectedWallpaper} else null;
+    image = if selectedWallpaper != "" then ../../wallpapers/${selectedWallpaper} else null;
     polarity = "dark";
   };
 
