@@ -30,7 +30,7 @@
     }@inputs:
     {
       nixosConfigurations.iphone6s = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
+        specialArgs = { inherit inputs; currentTime = builtins.currentTime; };
 
         modules = [
           # My main (and for the time being only configs)

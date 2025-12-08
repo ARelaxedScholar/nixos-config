@@ -9,7 +9,7 @@ let
   wallpaperList = ["Akai.jpeg" "Ao.png" "Kiiro.jpg" "Kurimuzon.png" "Midori.jpg"];
   sortedWallpapers = builtins.sort (a: b: a < b) wallpaperList;
   numWallpapers = builtins.length sortedWallpapers;
-  daysSinceEpoch = builtins.div builtins.currentTime 86400;
+  daysSinceEpoch = builtins.div inputs.currentTime 86400;
   dayIndex = daysSinceEpoch - (numWallpapers * (builtins.div daysSinceEpoch numWallpapers));
   selectedWallpaper = builtins.elemAt sortedWallpapers dayIndex;
 in
