@@ -10,6 +10,7 @@ let
   browser = "${pkgs.firefox}/bin/firefox";
   launcher = "${pkgs.rofi}/bin/rofi";
   fileManager = "${pkgs.kdePackages.dolphin}/bin/dolphin";
+  wallpaper = builtins.path { path = ../../wallpapers/Akai.jpeg; };
 in
 {
   home.packages = with pkgs; [
@@ -34,18 +35,18 @@ in
           }
       }
 
-      layout {
-          gaps 16
-          center-focused-column "never"
-      }
+layout {
+    gaps 16
+    center-focused-column "never"
+}
 
-        prefer-no-csd
+    prefer-no-csd
 
-        background {
-            image "/home/user/Pictures/Wallpapers/Akai.jpeg"
-        }
+    background {
+        image "${wallpaper}"
+    }
 
-       binds {
+   binds {
           // Program launchers
           Mod+Space { spawn "${launcher}" "-show" "drun"; }
           Mod+Return { spawn "${terminal}"; }

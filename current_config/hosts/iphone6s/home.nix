@@ -75,6 +75,7 @@ in
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
     polarity = "dark";
     enableReleaseChecks = false;
+    image = builtins.path { path = ../../wallpapers/Akai.jpeg; };
   };
 
   home.stateVersion = "25.05";
