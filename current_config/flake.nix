@@ -47,7 +47,7 @@
             home-manager.users.user = {
               imports = [
                 ./hosts/iphone6s/home.nix
-                inputs.stylix.homeManagerModules.stylix
+                inputs.stylix.homeModules.stylix
               ];
             };
           }

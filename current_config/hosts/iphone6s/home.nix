@@ -6,13 +6,12 @@
 }:
 
 let
-  wallpapers = builtins.readDir ./wallpapers;
-  isImage = name: builtins.match ".*\\.(jpg|jpeg|png|gif|bmp|webp)" name != null;
-  wallpaperList = builtins.filter isImage (builtins.attrNames wallpapers);
+  wallpaperList = ["Akai.jpeg" "Ao.png" "Kiiro.jpg" "Kurimuzon.png" "Midori.jpg"];
   sortedWallpapers = builtins.sort (a: b: a < b) wallpaperList;
   numWallpapers = builtins.length sortedWallpapers;
-  dayIndex = if numWallpapers > 0 then builtins.mod (builtins.div builtins.currentTime 86400) numWallpapers else 0;
-  selectedWallpaper = if numWallpapers > 0 then builtins.elemAt sortedWallpapers dayIndex else "";
+  daysSinceEpoch = builtins.div builtins.currentTime 86400;
+  dayIndex = daysSinceEpoch - (numWallpapers * (builtins.div daysSinceEpoch numWallpapers));
+  selectedWallpaper = builtins.elemAt sortedWallpapers dayIndex;
 in
 {
   imports = [
@@ -64,9 +63,14 @@ in
     };
   };
 
+  home.sessionVariables = {
+    EDITOR = "evil-helix";
+    VISUAL = "evil-helix";
+  };
+
   stylix = {
     enable = true;
-    image = if selectedWallpaper != "" then ./wallpapers/${selectedWallpaper} else null;
+    image = /home/user/Pictures/Wallpapers/${selectedWallpaper};
     polarity = "dark";
   };
 
