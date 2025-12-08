@@ -39,9 +39,7 @@ in
           center-focused-column "never"
       }
 
-       prefer-no-csd
-
-       background-image "${config.stylix.image}"
+        prefer-no-csd
 
        binds {
           // Program launchers
