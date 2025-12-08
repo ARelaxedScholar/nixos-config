@@ -39,9 +39,11 @@ in
           center-focused-column "never"
       }
 
-      prefer-no-csd
+       prefer-no-csd
 
-      binds {
+       background-image "${config.stylix.image}"
+
+       binds {
           // Program launchers
           Mod+Space { spawn "${launcher}" "-show" "drun"; }
           Mod+Return { spawn "${terminal}"; }
