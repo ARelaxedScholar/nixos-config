@@ -72,7 +72,7 @@ in
 
   stylix = {
     enable = true;
-    image = if selectedWallpaper != "" then ../../wallpapers/${selectedWallpaper} else null;
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
     polarity = "dark";
   };
 
