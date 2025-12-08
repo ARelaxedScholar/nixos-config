@@ -66,12 +66,15 @@ in
   };
 
   systemd.user.services.swaybg = {
-    enable = true;
-    description = "Set wallpaper";
-    wantedBy = [ "graphical-session.target" ];
-    serviceConfig = {
+    Unit = {
+      Description = "Set wallpaper";
+    };
+    Service = {
       ExecStart = "${pkgs.swaybg}/bin/swaybg /home/user/Pictures/Wallpapers/Akai.jpeg";
       Restart = "always";
+    };
+    Install = {
+      WantedBy = [ "graphical-session.target" ];
     };
   };
 
