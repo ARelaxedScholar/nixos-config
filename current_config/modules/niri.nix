@@ -41,8 +41,6 @@ in
 
         prefer-no-csd
 
-        background-image "${builtins.toString ../../wallpapers/Akai.jpeg}"
-
        binds {
           // Program launchers
           Mod+Space { spawn "${launcher}" "-show" "drun"; }

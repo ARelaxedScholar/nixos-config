@@ -73,6 +73,7 @@ in
     enable = true;
     image = if selectedWallpaper != "" then ../../wallpapers/${selectedWallpaper} else null;
     polarity = "dark";
+    targets.niri.enable = true;
   };
 
   home.stateVersion = "25.05";
