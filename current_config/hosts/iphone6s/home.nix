@@ -43,6 +43,7 @@ in
     zotero
     opencode
     ollama
+    swaybg
 
     # fonts
     noto-fonts-cjk-sans
@@ -61,6 +62,16 @@ in
       provider = "manual";
       latitude = 45.32;
       longitude = -77.88;
+    };
+  };
+
+  systemd.user.services.swaybg = {
+    enable = true;
+    description = "Set wallpaper";
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.swaybg}/bin/swaybg /home/user/Pictures/Wallpapers/Akai.jpeg";
+      Restart = "always";
     };
   };
 
