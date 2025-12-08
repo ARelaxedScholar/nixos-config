@@ -6,11 +6,14 @@
 }:
 
 let
-  wallpaperList = ["Akai.jpeg" "Ao.png" "Kiiro.jpg" "Kurimuzon.png" "Midori.jpg"];
+  wallpapers = builtins.readDir ./wallpapers;
+  isImage = name: builtins.match ".*\\.(jpg|jpeg|png|gif|bmp|webp)" name != null;
+  wallpaperList = builtins.filter isImage (builtins.attrNames wallpapers);
   sortedWallpapers = builtins.sort (a: b: a < b) wallpaperList;
   numWallpapers = builtins.length sortedWallpapers;
-  dayIndex = 0; # Temporary fix, will make it dynamic later
-  selectedWallpaper = builtins.elemAt sortedWallpapers dayIndex;
+  daysSinceEpoch = builtins.div builtins.currentTime 86400;
+  dayIndex = if numWallpapers > 0 then daysSinceEpoch - (numWallpapers * (builtins.div daysSinceEpoch numWallpapers)) else 0;
+  selectedWallpaper = if numWallpapers > 0 then builtins.elemAt sortedWallpapers dayIndex else "";
 in
 {
   imports = [
@@ -69,7 +72,7 @@ in
 
   stylix = {
     enable = true;
-    image = /home/user/Pictures/Wallpapers/${selectedWallpaper};
+    image = if selectedWallpaper != "" then ./wallpapers/${selectedWallpaper} else null;
     polarity = "dark";
   };
 
