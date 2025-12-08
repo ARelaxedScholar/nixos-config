@@ -8,7 +8,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    inputs.niri.nixosModules.niri
   ];
 
   # Enabling the experimental features
@@ -105,6 +104,7 @@ programs.niri = {
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
     cachix
+    chromium
     docker-compose
     eza
     htop
@@ -126,6 +126,7 @@ programs.niri = {
     # Portal debugging tools
     xdg-utils
     dbus
+    zoom-us
   ];
 
   # Enable the OpenSSH daemon.

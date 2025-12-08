@@ -5,6 +5,15 @@
   ...
 }:
 
+let
+  wallpapers = builtins.readDir ./wallpapers;
+  isImage = name: builtins.match ".*\\.(jpg|jpeg|png|gif|bmp|webp)" name != null;
+  wallpaperList = builtins.filter isImage (builtins.attrNames wallpapers);
+  sortedWallpapers = builtins.sort (a: b: a < b) wallpaperList;
+  numWallpapers = builtins.length sortedWallpapers;
+  dayIndex = if numWallpapers > 0 then builtins.mod (builtins.div builtins.currentTime 86400) numWallpapers else 0;
+  selectedWallpaper = if numWallpapers > 0 then builtins.elemAt sortedWallpapers dayIndex else "";
+in
 {
   imports = [
     ../../modules/niri.nix
@@ -32,6 +41,8 @@
     obsidian
     reaper
     zotero
+    opencode
+    ollama
 
     # fonts
     noto-fonts-cjk-sans
@@ -51,6 +62,12 @@
       latitude = 45.32;
       longitude = -77.88;
     };
+  };
+
+  stylix = {
+    enable = true;
+    image = if selectedWallpaper != "" then ./wallpapers/${selectedWallpaper} else null;
+    polarity = "dark";
   };
 
   home.stateVersion = "25.05";

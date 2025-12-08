@@ -14,6 +14,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     niri.url = "github:sodiboo/niri-flake";
+    stylix.url = "github:danth/stylix";
   };
 
   outputs =
@@ -36,6 +37,7 @@
           ./hosts/iphone6s/configuration.nix
           disko.nixosModules.disko
           ./hosts/iphone6s/disko-configuration.nix
+          inputs.stylix.nixosModules.stylix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = true;
@@ -45,6 +47,7 @@
             home-manager.users.user = {
               imports = [
                 ./hosts/iphone6s/home.nix
+                inputs.stylix.homeManagerModules.stylix
               ];
             };
           }
