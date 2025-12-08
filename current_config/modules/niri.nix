@@ -42,7 +42,7 @@ in
         prefer-no-csd
 
         background {
-            image = "/home/user/Pictures/Wallpapers/Akai.jpeg"
+            image "/home/user/Pictures/Wallpapers/Akai.jpeg"
         }
 
        binds {
