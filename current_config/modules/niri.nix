@@ -41,7 +41,7 @@ in
 
         prefer-no-csd
 
-        background-image "${../../wallpapers/Akai.jpeg}"
+        background-image "${builtins.toString ../../wallpapers/Akai.jpeg}"
 
        binds {
           // Program launchers
