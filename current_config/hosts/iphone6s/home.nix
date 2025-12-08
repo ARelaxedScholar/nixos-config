@@ -11,8 +11,7 @@ let
   wallpaperList = builtins.filter isImage (builtins.attrNames wallpapers);
   sortedWallpapers = builtins.sort (a: b: a < b) wallpaperList;
   numWallpapers = builtins.length sortedWallpapers;
-  daysSinceEpoch = builtins.div builtins.currentTime 86400;
-  dayIndex = if numWallpapers > 0 then daysSinceEpoch - (numWallpapers * (builtins.div daysSinceEpoch numWallpapers)) else 0;
+  dayIndex = 0; # Fixed for now, change to desired index (0-4)
   selectedWallpaper = if numWallpapers > 0 then builtins.elemAt sortedWallpapers dayIndex else "";
 in
 {
