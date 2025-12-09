@@ -39,7 +39,7 @@ in
 
   home.packages = with pkgs; [
     inputs.antigravity-nix.packages.x86_64-linux.default
-    evil-helix
+    inputs.evil-helix.packages.x86_64-linux.default
     tree
     obs-studio
     mpv
@@ -97,8 +97,8 @@ in
   };
 
   home.sessionVariables = {
-    EDITOR = "evil-helix";
-    VISUAL = "evil-helix";
+    EDITOR = "${inputs.evil-helix.packages.x86_64-linux.default}/bin/evil-helix";
+    VISUAL = "${inputs.evil-helix.packages.x86_64-linux.default}/bin/evil-helix";
   };
 
   stylix = {
@@ -118,4 +118,4 @@ in
   };
 
   home.stateVersion = "25.05";
-}
+}}
