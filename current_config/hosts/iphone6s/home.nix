@@ -12,10 +12,7 @@ let
   sortedWallpapers = builtins.sort (a: b: a < b) wallpaperList;
   numWallpapers = builtins.length sortedWallpapers;
   
-  # Use all wallpapers as a list for runtime selection
-  wallpaperPaths = map (name: ../../wallpapers + "/${name}") sortedWallpapers;
-  
-  # Default to first wallpaper for stylix (will be overridden at runtime)
+  # Default to first wallpaper for stylix
   defaultWallpaper = if numWallpapers > 0 
     then builtins.elemAt sortedWallpapers 0
     else "Akai.jpeg";
@@ -80,6 +77,11 @@ in
       SELECTED_WALLPAPER="''${WALLPAPERS[$INDEX]}"
       
       echo "Setting wallpaper: $SELECTED_WALLPAPER"
+      
+      # Kill existing swaybg instances
+      ${pkgs.procps}/bin/pkill swaybg 2>/dev/null || true
+      
+      # Set new wallpaper
       ${pkgs.swaybg}/bin/swaybg -i "$SELECTED_WALLPAPER" &
     '')
   ];
@@ -101,11 +103,18 @@ in
 
   stylix = {
     enable = true;
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
+    # Let stylix automatically generate colors from the wallpaper
+    autoEnable = true;
     polarity = "dark";
     enableReleaseChecks = false;
-    # Use the rotating wallpaper
+    # Stylix will extract colors from this image
     image = builtins.path { path = wallpaperPath; };
+    
+    # Customize opacity for terminals and popups
+    opacity = {
+      terminal = 0.95;
+      popups = 0.95;
+    };
   };
 
   home.stateVersion = "25.05";
