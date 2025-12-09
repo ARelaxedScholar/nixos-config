@@ -30,7 +30,7 @@
     }@inputs:
     {
       nixosConfigurations.iphone6s = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; currentTime = builtins.currentTime; };
+        specialArgs = { inherit inputs; };
 
         modules = [
           # My main (and for the time being only configs)
@@ -42,7 +42,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-            home-manager.extraSpecialArgs = { inherit inputs; currentTime = builtins.currentTime; };
+            home-manager.extraSpecialArgs = { inherit inputs; };
 
             home-manager.users.user = {
               imports = [

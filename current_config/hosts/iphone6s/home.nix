@@ -2,7 +2,6 @@
   config,
   pkgs,
   inputs,
-  currentTime,
   ...
 }:
 
@@ -13,17 +12,15 @@ let
   sortedWallpapers = builtins.sort (a: b: a < b) wallpaperList;
   numWallpapers = builtins.length sortedWallpapers;
   
-  # Calculate day-based index for rotation
-  secondsPerDay = 86400;
-  daysSinceEpoch = currentTime / secondsPerDay;
-  dayIndex = if numWallpapers > 0 then builtins.floor (daysSinceEpoch) else 0;
-  wallpaperIndex = if numWallpapers > 0 then (dayIndex - (dayIndex / numWallpapers) * numWallpapers) else 0;
+  # Use all wallpapers as a list for runtime selection
+  wallpaperPaths = map (name: ../../wallpapers + "/${name}") sortedWallpapers;
   
-  selectedWallpaper = if numWallpapers > 0 
-    then builtins.elemAt sortedWallpapers wallpaperIndex 
+  # Default to first wallpaper for stylix (will be overridden at runtime)
+  defaultWallpaper = if numWallpapers > 0 
+    then builtins.elemAt sortedWallpapers 0
     else "Akai.jpeg";
   
-  wallpaperPath = ../../wallpapers + "/${selectedWallpaper}";
+  wallpaperPath = ../../wallpapers + "/${defaultWallpaper}";
 in
 {
   imports = [
@@ -80,9 +77,29 @@ in
   home.sessionVariables = {
     EDITOR = "evil-helix";
     VISUAL = "evil-helix";
-    # Make wallpaper path available to niri config
-    WALLPAPER_PATH = "${wallpaperPath}";
   };
+  
+  # Create a script to select and set wallpaper based on day
+  home.packages = [
+    (pkgs.writeShellScriptBin "set-daily-wallpaper" ''
+      WALLPAPER_DIR="${../../wallpapers}"
+      WALLPAPERS=($(ls "$WALLPAPER_DIR"/*.{jpg,jpeg,png,gif,bmp,webp} 2>/dev/null | sort))
+      NUM_WALLPAPERS=''${#WALLPAPERS[@]}
+      
+      if [ $NUM_WALLPAPERS -eq 0 ]; then
+        echo "No wallpapers found in $WALLPAPER_DIR"
+        exit 1
+      fi
+      
+      # Calculate index based on day of year
+      DAY_OF_YEAR=$(date +%j)
+      INDEX=$((DAY_OF_YEAR % NUM_WALLPAPERS))
+      SELECTED_WALLPAPER="''${WALLPAPERS[$INDEX]}"
+      
+      echo "Setting wallpaper: $SELECTED_WALLPAPER"
+      ${pkgs.swaybg}/bin/swaybg -i "$SELECTED_WALLPAPER" &
+    '')
+  ];
 
   stylix = {
     enable = true;

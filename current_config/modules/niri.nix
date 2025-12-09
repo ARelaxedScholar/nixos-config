@@ -39,8 +39,8 @@ in
           center-focused-column "never"
       }
 
-      // Stylix manages the wallpaper through config.stylix.image
-      spawn-at-startup "${pkgs.swaybg}/bin/swaybg" "-i" "${config.stylix.image}"
+      // Run the daily wallpaper selector script at startup
+      spawn-at-startup "set-daily-wallpaper"
 
       binds {
           // Program launchers
