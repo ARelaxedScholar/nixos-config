@@ -10,7 +10,6 @@ let
   browser = "${pkgs.firefox}/bin/firefox";
   launcher = "${pkgs.rofi}/bin/rofi";
   fileManager = "${pkgs.kdePackages.dolphin}/bin/dolphin";
-  wallpaper = builtins.path { path = ../../wallpapers/Akai.jpeg; };
 in
 {
   home.packages = with pkgs; [
@@ -40,10 +39,8 @@ layout {
     center-focused-column "never"
 }
 
-    prefer-no-csd
-
     background {
-        image "${wallpaper}"
+        image "${config.stylix.image}"
     }
 
    binds {
@@ -111,7 +108,7 @@ layout {
           
           // Fullscreen
           Mod+Shift+F { fullscreen-window; }
-      }
-    '';
-  };
+       }
+   '';
+   };
 }

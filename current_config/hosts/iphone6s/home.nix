@@ -16,6 +16,7 @@ let
 in
 {
   imports = [
+    inputs.stylix.homeModules.stylix
     ../../modules/niri.nix
     ../../modules/waybar.nix
     ../../modules/zsh.nix
