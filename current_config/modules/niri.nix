@@ -34,16 +34,15 @@ in
           }
       }
 
-layout {
-    gaps 16
-    center-focused-column "never"
-}
+      layout {
+          gaps 16
+          center-focused-column "never"
+      }
 
-    background {
-        image "${config.stylix.image}"
-    }
+      // Stylix manages the wallpaper through config.stylix.image
+      spawn-at-startup "${pkgs.swaybg}/bin/swaybg" "-i" "${config.stylix.image}"
 
-   binds {
+      binds {
           // Program launchers
           Mod+Space { spawn "${launcher}" "-show" "drun"; }
           Mod+Return { spawn "${terminal}"; }
@@ -81,7 +80,7 @@ layout {
           Mod+7 { focus-workspace 7; }
           Mod+8 { focus-workspace 8; }
           Mod+9 { focus-workspace 9; }
-           Mod+J { focus-workspace-down; }
+          Mod+J { focus-workspace-down; }
           Mod+K { focus-workspace-up; }
           Mod+Down { focus-workspace-down; }
           Mod+Up { focus-workspace-up; }

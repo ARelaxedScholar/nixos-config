@@ -2,6 +2,7 @@
   config,
   pkgs,
   inputs,
+  currentTime,
   ...
 }:
 
@@ -11,8 +12,18 @@ let
   wallpaperList = builtins.filter isImage (builtins.attrNames wallpapers);
   sortedWallpapers = builtins.sort (a: b: a < b) wallpaperList;
   numWallpapers = builtins.length sortedWallpapers;
-  dayIndex = 0; # Fixed for now, change to desired index (0-4)
-  selectedWallpaper = if numWallpapers > 0 then builtins.elemAt sortedWallpapers dayIndex else "";
+  
+  # Calculate day-based index for rotation
+  secondsPerDay = 86400;
+  daysSinceEpoch = currentTime / secondsPerDay;
+  dayIndex = if numWallpapers > 0 then builtins.floor (daysSinceEpoch) else 0;
+  wallpaperIndex = if numWallpapers > 0 then (dayIndex - (dayIndex / numWallpapers) * numWallpapers) else 0;
+  
+  selectedWallpaper = if numWallpapers > 0 
+    then builtins.elemAt sortedWallpapers wallpaperIndex 
+    else "Akai.jpeg";
+  
+  wallpaperPath = ../../wallpapers + "/${selectedWallpaper}";
 in
 {
   imports = [
@@ -69,6 +80,8 @@ in
   home.sessionVariables = {
     EDITOR = "evil-helix";
     VISUAL = "evil-helix";
+    # Make wallpaper path available to niri config
+    WALLPAPER_PATH = "${wallpaperPath}";
   };
 
   stylix = {
@@ -76,7 +89,8 @@ in
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-dark-hard.yaml";
     polarity = "dark";
     enableReleaseChecks = false;
-    image = builtins.path { path = ../../wallpapers/Akai.jpeg; };
+    # Use the rotating wallpaper
+    image = builtins.path { path = wallpaperPath; };
   };
 
   home.stateVersion = "25.05";
