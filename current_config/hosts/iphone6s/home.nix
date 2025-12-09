@@ -62,26 +62,9 @@ in
     noto-fonts-color-emoji
     wofi
     kdePackages.dolphin
-  ];
-
-  services = {
-    # blue light filter
-    gammastep = {
-      enable = true;
-      provider = "manual";
-      latitude = 45.32;
-      longitude = -77.88;
-    };
-  };
-
-  home.sessionVariables = {
-    EDITOR = "evil-helix";
-    VISUAL = "evil-helix";
-  };
-  
-  # Create a script to select and set wallpaper based on day
-  home.packages = [
-    (pkgs.writeShellScriptBin "set-daily-wallpaper" ''
+    
+    # Daily wallpaper rotation script
+    (writeShellScriptBin "set-daily-wallpaper" ''
       WALLPAPER_DIR="${../../wallpapers}"
       WALLPAPERS=($(ls "$WALLPAPER_DIR"/*.{jpg,jpeg,png,gif,bmp,webp} 2>/dev/null | sort))
       NUM_WALLPAPERS=''${#WALLPAPERS[@]}
@@ -100,6 +83,21 @@ in
       ${pkgs.swaybg}/bin/swaybg -i "$SELECTED_WALLPAPER" &
     '')
   ];
+
+  services = {
+    # blue light filter
+    gammastep = {
+      enable = true;
+      provider = "manual";
+      latitude = 45.32;
+      longitude = -77.88;
+    };
+  };
+
+  home.sessionVariables = {
+    EDITOR = "evil-helix";
+    VISUAL = "evil-helix";
+  };
 
   stylix = {
     enable = true;
