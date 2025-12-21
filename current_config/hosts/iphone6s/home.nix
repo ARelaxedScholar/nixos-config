@@ -50,6 +50,7 @@ in
     opencode
     ollama
     swaybg
+    zed-editor
 
     # fonts
     noto-fonts-cjk-sans

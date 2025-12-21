@@ -127,6 +127,11 @@ programs.niri = {
     xdg-utils
     dbus
     zoom-us
+
+    # Development tools
+    nodejs_22
+    nodePackages.npm
+    uv
   ];
 
   # Enable the OpenSSH daemon.
