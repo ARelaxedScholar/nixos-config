@@ -60,6 +60,7 @@ in
     noto-fonts-color-emoji
     wofi
     kdePackages.dolphin
+    kdePackages.okular
     
     # Daily wallpaper rotation script
     (writeShellScriptBin "set-daily-wallpaper" ''
@@ -100,6 +101,7 @@ in
   home.sessionVariables = {
     EDITOR = "${inputs.evil-helix.packages.x86_64-linux.default}/bin/evil-helix";
     VISUAL = "${inputs.evil-helix.packages.x86_64-linux.default}/bin/evil-helix";
+    BROWSER = "chromium";
   };
 
   stylix = {
@@ -115,6 +117,30 @@ in
     opacity = {
       terminal = 0.95;
       popups = 0.95;
+    };
+  };
+
+  # Set default applications
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "text/html" = [ "chromium.desktop" ];
+      "x-scheme-handler/http" = [ "chromium.desktop" ];
+      "x-scheme-handler/https" = [ "chromium.desktop" ];
+      "x-scheme-handler/about" = [ "chromium.desktop" ];
+      "x-scheme-handler/unknown" = [ "chromium.desktop" ];
+      
+      "inode/directory" = [ "org.kde.dolphin.desktop" ];
+      
+      "application/pdf" = [ "org.kde.okular.desktop" ];
+      "application/x-pdf" = [ "org.kde.okular.desktop" ];
+      "application/postscript" = [ "org.kde.okular.desktop" ];
+      
+      "audio/mpeg" = [ "mpv.desktop" ];
+      "audio/*" = [ "mpv.desktop" ];
+      "video/*" = [ "mpv.desktop" ];
+      
+      "image/*" = [ "org.kde.gwenview.desktop" ];
     };
   };
 

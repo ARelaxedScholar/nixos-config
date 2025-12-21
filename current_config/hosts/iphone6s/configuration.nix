@@ -132,6 +132,10 @@ programs.niri = {
     nodejs_22
     nodePackages.npm
     uv
+
+    # Default applications
+    mpv
+    kdePackages.gwenview
   ];
 
   # Enable the OpenSSH daemon.
