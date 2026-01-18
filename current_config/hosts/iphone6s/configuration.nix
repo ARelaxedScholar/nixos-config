@@ -74,10 +74,24 @@ programs.niri = {
     XDG_CURRENT_DESKTOP = "Niri";
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Niri";
+    LIBINPUT_ACCEL_SPEED = "-0.3";
+    LIBINPUT_ACCEL_PROFILE = "flat";
+    LIBINPUT_DISABLE_WHILE_TYPING = "1";
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
-  services.libinput.enable = true;
+  services.libinput = {
+    enable = true;
+    touchpad = {
+      accelSpeed = "-0.3";        # 30% slower than default
+      accelProfile = "flat";      # Predictable linear movement
+      disableWhileTyping = true;  # Prevent cursor jumps while typing
+      tapping = true;             # Enable tap-to-click (required for Niri)
+      naturalScrolling = false;   # Let Niri handle scroll direction
+    };
+  };
+
+
 
   nixpkgs.config.allowUnfree = true;
 
@@ -105,6 +119,7 @@ programs.niri = {
   environment.systemPackages = with pkgs; [
     cachix
     chromium
+    libinput
     docker-compose
     eza
     htop
@@ -136,6 +151,7 @@ programs.niri = {
     # Default applications
     mpv
     kdePackages.gwenview
+    libreoffice
   ];
 
   # Enable the OpenSSH daemon.

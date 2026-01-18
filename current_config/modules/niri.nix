@@ -28,10 +28,12 @@ in
               }
           }
           
-          touchpad {
-              tap
-              natural-scroll
-          }
+            touchpad {
+                tap
+                natural-scroll
+                accel-speed -0.3
+                accel-profile "flat"
+            }
       }
 
       layout {

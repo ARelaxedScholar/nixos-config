@@ -103,7 +103,7 @@
         line_height = "comfortable";
         option_as_meta = false;
         button = false;
-        shell = "system";
+        shell = { program = "${pkgs.zsh}/bin/zsh"; args = ["-l"]; };
         toolbar = {
           title = true;
         };
@@ -137,7 +137,7 @@
 
         "rust-analyzer" = {
           binary = {
-            path = "/nix/store/3i6z4bh7ffyj99drw554nsmnspyizky6-rust-default-1.87.0-nightly-2025-02-18/bin/rust-analyzer";
+            path_lookup = true;
           };
           settings = {
             diagnostics = {
