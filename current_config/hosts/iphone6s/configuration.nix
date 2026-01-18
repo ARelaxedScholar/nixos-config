@@ -46,10 +46,11 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  # Enable sound.
+  # Enable sound and screen sharing.
   services.pipewire = {
     enable = true;
     pulse.enable = true;
+    wireplumber.enable = true;
   };
 
   # Enable Hyprland
@@ -58,11 +59,12 @@ programs.niri = {
   package = pkgs.niri;
 };
 
-  # XDG Portal configuration - CRITICAL for file dialogs
+  # XDG Portal configuration - CRITICAL for file dialogs and screen sharing
   xdg.portal = {
     enable = true;
-    wlr.enable = false;
+    wlr.enable = true;
     extraPortals = with pkgs; [
+      xdg-desktop-portal-wlr
       xdg-desktop-portal-gnome
       xdg-desktop-portal-gtk
     ];
@@ -77,6 +79,10 @@ programs.niri = {
     LIBINPUT_ACCEL_SPEED = "-0.3";
     LIBINPUT_ACCEL_PROFILE = "flat";
     LIBINPUT_DISABLE_WHILE_TYPING = "1";
+    # OBS screen sharing on Wayland
+    OBS_USE_EGL = "1";
+    OBS_USE_WAYLAND = "1";
+    QT_QPA_PLATFORM = "wayland";
   };
 
   # Enable touchpad support (enabled default in most desktopManager).

@@ -32,9 +32,9 @@ in
     [preferred]
     default=gtk
     org.freedesktop.impl.portal.FileChooser=gtk
-    # Niri uses the GNOME portal for screencasting/screenshots
-    org.freedesktop.impl.portal.Screenshot=gnome
-    org.freedesktop.impl.portal.ScreenCast=gnome
+    # Use wlr portal for screencasting on wlroots-based compositors (Niri)
+    org.freedesktop.impl.portal.Screenshot=wlr
+    org.freedesktop.impl.portal.ScreenCast=wlr
   '';
 
   home.packages = with pkgs; [
