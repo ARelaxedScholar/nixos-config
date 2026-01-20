@@ -64,8 +64,8 @@ in
     
     # R Markdown
     (rWrapper.override { packages = with rPackages; [ rmarkdown knitr tidyverse tinytex ]; })
+    rstudio
     
-
     # Daily wallpaper rotation script
     (writeShellScriptBin "set-daily-wallpaper" ''
       WALLPAPER_DIR="${../../wallpapers}"
