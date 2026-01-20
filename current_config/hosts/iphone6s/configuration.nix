@@ -76,7 +76,7 @@ programs.niri = {
     XDG_CURRENT_DESKTOP = "Niri";
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Niri";
-    LIBINPUT_ACCEL_SPEED = "-0.3";
+    LIBINPUT_ACCEL_SPEED = "-0.5";
     LIBINPUT_ACCEL_PROFILE = "flat";
     LIBINPUT_DISABLE_WHILE_TYPING = "1";
     # OBS screen sharing on Wayland
@@ -89,7 +89,7 @@ programs.niri = {
   services.libinput = {
     enable = true;
     touchpad = {
-      accelSpeed = "-0.3";        # 30% slower than default
+       accelSpeed = "-0.5";        # 50% slower than default
       accelProfile = "flat";      # Predictable linear movement
       disableWhileTyping = true;  # Prevent cursor jumps while typing
       tapping = true;             # Enable tap-to-click (required for Niri)
@@ -153,6 +153,9 @@ programs.niri = {
     nodejs_22
     nodePackages.npm
     uv
+    R
+    pandoc
+    texlive.combined.scheme-basic
 
     # Default applications
     mpv
@@ -168,6 +171,23 @@ programs.niri = {
 
   # Copy the NixOS configuration file and link it from the resulting system (I am using flakes)
   system.copySystemConfiguration = false;
+
+   # Hardware database entries for libinput touchpad settings (Wayland)
+  services.udev.extraHwdb = ''
+    # Dell touchpad sensitivity adjustments
+    evdev:input:b0018v0488p121Fe0100*
+     LIBINPUT_ATTR_ACCEL_SPEED=-0.5
+     LIBINPUT_ATTR_ACCEL_PROFILE=flat
+     LIBINPUT_ATTR_DISABLE_WHILE_TYPING=1
+     LIBINPUT_ATTR_PALM_PRESSURE_THRESHOLD=250
+     LIBINPUT_ATTR_TAP_ENABLED=1
+  '';
+
+  # Udev rules as alternative (may be needed for some systems)
+  services.udev.extraRules = ''
+    # Touchpad sensitivity adjustments for libinput (Wayland)
+    ACTION=="add|change", KERNEL=="event[0-9]*", ENV{ID_VENDOR_ID}=="0488", ENV{ID_MODEL_ID}=="121f", ENV{LIBINPUT_ATTR_ACCEL_SPEED}="-0.5", ENV{LIBINPUT_ATTR_ACCEL_PROFILE}="flat", ENV{LIBINPUT_ATTR_DISABLE_WHILE_TYPING}="1", ENV{LIBINPUT_ATTR_PALM_PRESSURE_THRESHOLD}="250", ENV{LIBINPUT_ATTR_TAP_ENABLED}="1"
+  '';
 
   # Should never change this
   system.stateVersion = "25.05";

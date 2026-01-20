@@ -62,6 +62,9 @@ in
     kdePackages.dolphin
     kdePackages.okular
     
+    # R Markdown
+    (rWrapper.override { packages = with rPackages; [ rmarkdown knitr tidyverse ]; })
+    
     # Daily wallpaper rotation script
     (writeShellScriptBin "set-daily-wallpaper" ''
       WALLPAPER_DIR="${../../wallpapers}"
@@ -102,6 +105,9 @@ in
     EDITOR = "${inputs.evil-helix.packages.x86_64-linux.default}/bin/evil-helix";
     VISUAL = "${inputs.evil-helix.packages.x86_64-linux.default}/bin/evil-helix";
     BROWSER = "chromium";
+    LIBINPUT_ACCEL_SPEED = "-0.5";
+    LIBINPUT_ACCEL_PROFILE = "flat";
+    LIBINPUT_DISABLE_WHILE_TYPING = "1";
   };
 
   stylix = {
