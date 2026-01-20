@@ -166,6 +166,12 @@ programs.niri = {
     mpv
     kdePackages.gwenview
     libreoffice
+    
+    # Utilities
+    which
+    
+    # Graphics/OpenGL
+    mesa
   ];
 
   # Enable the OpenSSH daemon.

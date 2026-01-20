@@ -71,8 +71,8 @@ in
       export GDK_BACKEND=wayland,x11
       export NIXOS_OZONE_WL=1
       export LIBGL_ALWAYS_SOFTWARE=1
-      export ELECTRON_FLAGS="--disable-gpu --disable-gpu-sandbox"
-      exec ${rstudio}/bin/rstudio "$@"
+      export ANGLE=software
+      exec ${rstudio}/bin/rstudio --enable-features=UseOzonePlatform --ozone-platform=wayland --disable-gpu --disable-gpu-sandbox --disable-software-rasterizer "$@"
     '')
     
     # Daily wallpaper rotation script
