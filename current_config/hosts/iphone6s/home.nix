@@ -112,6 +112,8 @@ in
     GDK_BACKEND = "wayland,x11";
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
     ELECTRON_OZONE_PLATFORM = "wayland";
+    SDL_VIDEODRIVER = "wayland";
+    _JAVA_AWT_WM_NONREPARENTING = "1";
   };
 
   stylix = {
