@@ -84,6 +84,8 @@ programs.niri = {
     OBS_USE_WAYLAND = "1";
     QT_QPA_PLATFORM = "wayland";
     GDK_BACKEND = "wayland,x11";
+    DISPLAY = ":0";
+    XAUTHORITY = "$HOME/.Xauthority";
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -95,8 +97,6 @@ programs.niri = {
       disableWhileTyping = true;  # Prevent cursor jumps while typing
       tapping = true;             # Enable tap-to-click (required for Niri)
       naturalScrolling = false;   # Let Niri handle scroll direction
-    DISPLAY = ":0";
-    XAUTHORITY = "$HOME/.Xauthority";
   };
   };
 
