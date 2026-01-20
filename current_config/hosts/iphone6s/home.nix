@@ -109,6 +109,7 @@ in
     LIBINPUT_ACCEL_SPEED = "-0.5";
     LIBINPUT_ACCEL_PROFILE = "flat";
     LIBINPUT_DISABLE_WHILE_TYPING = "1";
+    GDK_BACKEND = "wayland,x11";
   };
 
   stylix = {

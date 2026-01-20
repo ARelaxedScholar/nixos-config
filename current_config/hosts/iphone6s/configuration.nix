@@ -83,6 +83,7 @@ programs.niri = {
     OBS_USE_EGL = "1";
     OBS_USE_WAYLAND = "1";
     QT_QPA_PLATFORM = "wayland";
+    GDK_BACKEND = "wayland,x11";
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -126,6 +127,8 @@ programs.niri = {
     cachix
     chromium
     libinput
+    xorg.xwayland
+    xorg.xauth
     docker-compose
     eza
     htop
