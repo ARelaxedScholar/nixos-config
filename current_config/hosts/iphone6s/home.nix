@@ -110,6 +110,8 @@ in
     LIBINPUT_ACCEL_PROFILE = "flat";
     LIBINPUT_DISABLE_WHILE_TYPING = "1";
     GDK_BACKEND = "wayland,x11";
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+    ELECTRON_OZONE_PLATFORM = "wayland";
   };
 
   stylix = {

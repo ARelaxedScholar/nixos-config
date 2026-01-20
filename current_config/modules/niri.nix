@@ -34,9 +34,13 @@ in
                 accel-speed -0.3
                 accel-profile "flat"
             }
-      }
+       }
 
-      layout {
+       xwayland {
+           enable = true
+       }
+
+       layout {
           gaps 16
           center-focused-column "never"
       }
