@@ -38,6 +38,7 @@ in
 
        xwayland {
            enable = true
+           lazy = false
        }
 
        layout {

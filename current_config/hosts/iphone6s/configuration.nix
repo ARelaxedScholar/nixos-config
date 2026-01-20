@@ -95,7 +95,9 @@ programs.niri = {
       disableWhileTyping = true;  # Prevent cursor jumps while typing
       tapping = true;             # Enable tap-to-click (required for Niri)
       naturalScrolling = false;   # Let Niri handle scroll direction
-    };
+    DISPLAY = ":0";
+    XAUTHORITY = "$HOME/.Xauthority";
+  };
   };
 
 

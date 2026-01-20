@@ -114,6 +114,8 @@ in
     ELECTRON_OZONE_PLATFORM = "wayland";
     SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";
+    DISPLAY = ":0";
+    XAUTHORITY = "$HOME/.Xauthority";
   };
 
   stylix = {
