@@ -64,7 +64,16 @@ in
     
     # R Markdown
     (rWrapper.override { packages = with rPackages; [ rmarkdown knitr tidyverse tinytex ]; })
-    rstudio
+    (writeShellScriptBin "rstudio" ''
+      export ELECTRON_OZONE_PLATFORM=wayland
+      export ELECTRON_OZONE_PLATFORM_HINT=auto
+      export QT_QPA_PLATFORM=wayland
+      export GDK_BACKEND=wayland,x11
+      export NIXOS_OZONE_WL=1
+      export LIBGL_ALWAYS_SOFTWARE=1
+      export ELECTRON_FLAGS="--disable-gpu --disable-gpu-sandbox"
+      exec ${rstudio}/bin/rstudio "$@"
+    '')
     
     # Daily wallpaper rotation script
     (writeShellScriptBin "set-daily-wallpaper" ''

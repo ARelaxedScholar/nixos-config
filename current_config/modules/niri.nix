@@ -36,10 +36,19 @@ in
             }
        }
 
-       xwayland {
-           enable = true
-           lazy = false
-       }
+        xwayland {
+            enable = true
+            lazy = false
+        }
+
+        env {
+            DISPLAY = ":0"
+            XAUTHORITY = "$HOME/.Xauthority"
+            ELECTRON_OZONE_PLATFORM = "wayland"
+            ELECTRON_OZONE_PLATFORM_HINT = "auto"
+            QT_QPA_PLATFORM = "wayland"
+            GDK_BACKEND = "wayland,x11"
+        }
 
        layout {
           gaps 16

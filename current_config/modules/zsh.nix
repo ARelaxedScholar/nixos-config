@@ -8,6 +8,12 @@
 
     profileExtra = ''
       if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
+        export DISPLAY=":0"
+        export XAUTHORITY="$HOME/.Xauthority"
+        export ELECTRON_OZONE_PLATFORM="wayland"
+        export ELECTRON_OZONE_PLATFORM_HINT="auto"
+        export QT_QPA_PLATFORM="wayland"
+        export GDK_BACKEND="wayland,x11"
         exec niri --session
       fi
     '';
