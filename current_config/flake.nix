@@ -40,7 +40,7 @@
           inputs.stylix.nixosModules.stylix
           home-manager.nixosModules.home-manager
           {
-            home-manager.useGlobalPkgs = true;
+            home-manager.useGlobalPkgs = false;
             home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
 
@@ -48,6 +48,7 @@
               imports = [
                 ./hosts/iphone6s/home.nix
               ];
+              nixpkgs.config.allowUnfree = true;
             };
           }
         ];
