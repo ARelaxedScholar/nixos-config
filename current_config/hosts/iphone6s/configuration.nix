@@ -155,7 +155,7 @@ programs.niri = {
     uv
     R
     pandoc
-    texlive.combined.scheme-basic
+    texlive.combined.scheme-medium
 
     # Default applications
     mpv

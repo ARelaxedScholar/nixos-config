@@ -63,8 +63,9 @@ in
     kdePackages.okular
     
     # R Markdown
-    (rWrapper.override { packages = with rPackages; [ rmarkdown knitr tidyverse ]; })
+    (rWrapper.override { packages = with rPackages; [ rmarkdown knitr tidyverse tinytex ]; })
     
+
     # Daily wallpaper rotation script
     (writeShellScriptBin "set-daily-wallpaper" ''
       WALLPAPER_DIR="${../../wallpapers}"
