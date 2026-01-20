@@ -127,8 +127,8 @@ programs.niri = {
     cachix
     chromium
     libinput
-    xorg.xwayland
-    xorg.xauth
+    xwayland
+    xauth
     docker-compose
     eza
     htop
