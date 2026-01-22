@@ -29,6 +29,11 @@
 
   # bluetooth
   hardware.bluetooth.enable = true;
+  # seatd for session management (required for niri)
+  services.seatd.enable = true;
+  services.seatd.logLevel = "info";
+  # polkit for authentication
+  security.polkit.enable = true;
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages;
@@ -53,11 +58,11 @@
     wireplumber.enable = true;
   };
 
-  # Enable Hyprland
-programs.niri = {
-  enable = true;
-  package = pkgs.niri;
-};
+  # Enable Niri
+  programs.niri = {
+    enable = true;
+    package = pkgs.niri;
+  };
 
   # XDG Portal configuration - CRITICAL for file dialogs and screen sharing
   xdg.portal = {
@@ -114,6 +119,9 @@ programs.niri = {
     extraGroups = [
       "wheel"
       "docker"
+      "seat"
+      "video"
+      "input"
     ]; # Enable 'sudo' for the user.
     shell = pkgs.zsh;
   };
@@ -126,6 +134,7 @@ programs.niri = {
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    bun
     cachix
     chromium
     libinput
