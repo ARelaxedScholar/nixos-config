@@ -29,7 +29,7 @@
 
   # bluetooth
   hardware.bluetooth.enable = true;
-  # seatd for session management (required for niri)
+   # seatd for session management (required for niri)
   services.seatd.enable = true;
   services.seatd.logLevel = "info";
   # polkit for authentication
@@ -61,7 +61,29 @@
   # Enable Niri
   programs.niri = {
     enable = true;
-    package = pkgs.niri;
+    package = pkgs.runCommand "niri-wrapped"
+      {
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+        buildInputs = [
+          pkgs.xorg.libXcursor
+          pkgs.xorg.libX11
+          pkgs.xorg.libXrender
+          pkgs.xorg.libXi
+          pkgs.xorg.libXfixes
+          pkgs.xorg.libXext
+        ];
+      }
+      ''
+        mkdir -p $out/bin
+        makeWrapper ${inputs.niri.packages.${pkgs.system}.niri-unstable}/bin/niri $out/bin/niri \
+          --set LD_LIBRARY_PATH "${pkgs.xorg.libXcursor}/lib:${pkgs.xorg.libX11}/lib:${pkgs.xorg.libXrender}/lib:${pkgs.xorg.libXi}/lib:${pkgs.xorg.libXfixes}/lib:${pkgs.xorg.libXext}/lib" \
+          --set WINIT_UNIX_BACKEND wayland \
+          --set WINIT_BACKEND wayland \
+          --set WINIT_PLATFORM wayland \
+          --unset DISPLAY \
+          --unset XAUTHORITY \
+          --prefix PATH : ${pkgs.xorg.libXcursor}/bin
+      '';
   };
 
   # XDG Portal configuration - CRITICAL for file dialogs and screen sharing
@@ -73,9 +95,14 @@
       xdg-desktop-portal-gnome
       xdg-desktop-portal-gtk
     ];
+    # Required for xdg-desktop-portal >= 1.17
+    config.common.default = "*";
   };
 
   # Ensure proper environment variables for Wayland
+  environment.variables = {
+    EDITOR = "evil-helix";
+  };
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
     XDG_CURRENT_DESKTOP = "Niri";
@@ -89,8 +116,7 @@
     OBS_USE_WAYLAND = "1";
     QT_QPA_PLATFORM = "wayland";
     GDK_BACKEND = "wayland,x11";
-    DISPLAY = ":0";
-    XAUTHORITY = "$HOME/.Xauthority";
+    WINIT_UNIX_BACKEND = "wayland";
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -139,6 +165,7 @@
     chromium
     libinput
     xwayland
+    xwayland-satellite
     xauth
     docker-compose
     eza
@@ -181,6 +208,14 @@
     
     # Graphics/OpenGL
     mesa
+    xorg.libXcursor
+    xorg.libX11
+    xorg.libXrandr
+    xorg.libXrender
+    xorg.libXi
+    xorg.libXfixes
+    xorg.libXext
+    libxcb
   ];
 
   # Enable the OpenSSH daemon.

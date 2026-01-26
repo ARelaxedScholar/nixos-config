@@ -1,0 +1,29 @@
+[2m2026-01-25T20:47:25.271961Z[0m [32m INFO[0m [2mniri[0m[2m:[0m starting version unstable 2025-12-09 (commit 4d058e611147803f5188e417943c6653d846542f)
+[2m2026-01-25T20:47:25.273930Z[0m [33m WARN[0m [2mniri[0m[2m:[0m   × error loading config
+  ├─▶ error parsing
+  ╰─▶ error parsing KDL
+
+Error:   × identifiers cannot be used as arguments
+    ╭─[config.kdl:23:1]
+ 23 │  }
+ 24 │  xwayland enable
+    ·           ───┬──
+    ·              ╰── unexpected identifier
+ 25 │ 
+    ╰────
+  help: consider enclosing in double quotes ".."
+
+
+thread 'main' (11903) panicked at src/main.rs:181:6:
+called `Result::unwrap()` on an `Err` value: EventLoopCreation(Os(OsError { line: 788, file: "/cargo-vendor-dir/winit-0.30.12/src/platform_impl/linux/mod.rs", error: XNotSupported(XOpenDisplayFailed) }))
+stack backtrace:
+   0: __rustc::rust_begin_unwind
+   1: core::panicking::panic_fmt
+   2: core::result::unwrap_failed
+   3: unwrap<niri::niri::State, alloc::boxed::Box<dyn core::error::Error, alloc::alloc::Global>>
+             at /rustc-1.91.1-src/library/core/src/result.rs:1226:23
+   4: main
+             at ./src/main.rs:181:6
+   5: call_once<fn() -> core::result::Result<(), alloc::boxed::Box<dyn core::error::Error, alloc::alloc::Global>>, ()>
+             at /rustc-1.91.1-src/library/core/src/ops/function.rs:250:5
+note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.

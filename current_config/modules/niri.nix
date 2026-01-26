@@ -34,26 +34,31 @@ in
                accel-speed -0.3
                accel-profile "flat"
            }
-       }
+        }
 
-       layout {
-           gaps 16
-           center-focused-column "never"
-       }
+
+
+
+
+        layout {
+            gaps 16
+            center-focused-column "never"
+        }
+      //xwayland "enable"
 
        // Run the daily wallpaper selector script at startup
        spawn-at-startup "set-daily-wallpaper"
 
        binds {
            // Program launchers
-           Mod+Space { spawn "${launcher}" "-show" "drun"; }
-           Mod+Return { spawn "${terminal}"; }
-           Mod+E { spawn "${browser}"; }
-           Mod+F { spawn "${fileManager}"; }
+            Mod+Space { spawn "${launcher}" "-show" "drun"; }
+            Mod+Return { spawn "${terminal}"; }
+            Mod+E { spawn "${browser}"; }
+            Mod+F { spawn "${fileManager}"; }
            
            // Window management
-           Mod+Q { close-window; }
-           Mod+Shift+Q { quit; }
+            Mod+Q { close-window; }
+            Mod+Shift+Q { quit; }
 
            // Focus movement
            Mod+H { focus-column-left; }
@@ -99,17 +104,17 @@ in
            Mod+Shift+9 { move-column-to-workspace 9; }
 
            // Screenshots
-           Print { spawn "${pkgs.grim}/bin/grim" "-g" "$(${pkgs.slurp}/bin/slurp)" "$(xdg-user-dir PICTURES)/$(date +'screenshot_%Y-%m-%d-%H%M%S.png')"; }
-           Mod+Print { spawn "${pkgs.grim}/bin/grim" "$(xdg-user-dir PICTURES)/$(date +'screenshot_%Y-%m-%d-%H%M%S.png')"; }
+             Print { spawn "${pkgs.grim}/bin/grim" "-g" "$(${pkgs.slurp}/bin/slurp)" "$(xdg-user-dir PICTURES)/$(date +screenshot_%Y-%m-%d-%H%M%S.png)"; }
+             Mod+Print { spawn "${pkgs.grim}/bin/grim" "$(xdg-user-dir PICTURES)/$(date +screenshot_%Y-%m-%d-%H%M%S.png)"; }
 
            // Media keys
-           XF86AudioRaiseVolume { spawn "${pkgs.wireplumber}/bin/wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
-           XF86AudioLowerVolume { spawn "${pkgs.wireplumber}/bin/wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
-           XF86AudioMute { spawn "${pkgs.wireplumber}/bin/wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
+            XF86AudioRaiseVolume { spawn "${pkgs.wireplumber}/bin/wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }
+            XF86AudioLowerVolume { spawn "${pkgs.wireplumber}/bin/wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1-"; }
+            XF86AudioMute { spawn "${pkgs.wireplumber}/bin/wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
            
            // Fullscreen
-           Mod+Shift+F { fullscreen-window; }
+            Mod+Shift+F { fullscreen-window; }
        }
-   '';
-   };
+     '';
+  };
 }

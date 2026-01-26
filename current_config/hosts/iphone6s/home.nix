@@ -28,14 +28,14 @@ in
   ];
 
   # Ensure portal config files are created
-  xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
-    [preferred]
-    default=gtk
-    org.freedesktop.impl.portal.FileChooser=gtk
-    # Use wlr portal for screencasting on wlroots-based compositors (Niri)
-    org.freedesktop.impl.portal.Screenshot=wlr
-    org.freedesktop.impl.portal.ScreenCast=wlr
-  '';
+   xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
+     [preferred]
+     default=gtk
+     org.freedesktop.impl.portal.FileChooser=gtk
+     # Use wlr portal for screencasting on wlroots-based compositors (Niri)
+     org.freedesktop.impl.portal.Screenshot=wlr
+     org.freedesktop.impl.portal.ScreenCast=wlr
+   '';
 
   home.packages = with pkgs; [
     inputs.antigravity-nix.packages.x86_64-linux.default
@@ -123,8 +123,7 @@ in
     ELECTRON_OZONE_PLATFORM = "wayland";
     SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";
-    DISPLAY = ":0";
-    XAUTHORITY = "$HOME/.Xauthority";
+    WINIT_UNIX_BACKEND = "wayland";
   };
 
   stylix = {

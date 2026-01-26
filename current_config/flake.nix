@@ -26,6 +26,8 @@
       home-manager,
       evil-helix,
       antigravity-nix,
+      stylix,
+      niri,
       ...
     }@inputs:
     {
@@ -37,7 +39,7 @@
           ./hosts/iphone6s/configuration.nix
           disko.nixosModules.disko
           ./hosts/iphone6s/disko-configuration.nix
-          inputs.stylix.nixosModules.stylix
+          stylix.nixosModules.stylix
           home-manager.nixosModules.home-manager
           {
             home-manager.useGlobalPkgs = false;

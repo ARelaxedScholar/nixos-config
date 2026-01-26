@@ -7,7 +7,7 @@
     syntaxHighlighting.enable = true;
 
     profileExtra = ''
-      if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ]; then
+      if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
         export DISPLAY=":0"
         export XAUTHORITY="$HOME/.Xauthority"
         export ELECTRON_OZONE_PLATFORM="wayland"
