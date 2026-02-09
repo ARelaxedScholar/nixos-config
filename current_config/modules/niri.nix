@@ -14,13 +14,13 @@ in
 {
   home.packages = with pkgs; [
     rofi
-    grim  # for screenshots
+    grim # for screenshots
     slurp # for area selection
   ];
 
-   xdg.configFile."niri/config.kdl" = {
-     force = true;
-     text = ''
+  xdg.configFile."niri/config.kdl" = {
+    force = true;
+    text = ''
        input {
            keyboard {
                xkb {
@@ -48,6 +48,11 @@ in
 
        // Run the daily wallpaper selector script at startup
        spawn-at-startup "set-daily-wallpaper"
+       spawn-at-startup "waybar"
+       spawn-at-startup "swaync"
+       spawn-at-startup "fcitx5" "-d"
+       spawn-at-startup "blueman-applet"
+       spawn-at-startup "nm-applet"
 
        binds {
            // Program launchers
@@ -115,6 +120,6 @@ in
            // Fullscreen
             Mod+Shift+F { fullscreen-window; }
        }
-     '';
+    '';
   };
 }

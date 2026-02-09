@@ -29,7 +29,7 @@
 
   # bluetooth
   hardware.bluetooth.enable = true;
-   # seatd for session management (required for niri)
+  # seatd for session management (required for niri)
   services.seatd.enable = true;
   services.seatd.logLevel = "info";
   # polkit for authentication
@@ -48,6 +48,15 @@
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
+  i18n.inputMethod = {
+    enable = true;
+    type = "fcitx5";
+    fcitx5.addons = with pkgs; [
+      fcitx5-mozc
+      fcitx5-gtk
+    ];
+  };
+
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
@@ -58,32 +67,40 @@
     wireplumber.enable = true;
   };
 
+  services.gvfs.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
   # Enable Niri
   programs.niri = {
     enable = true;
-    package = pkgs.runCommand "niri-wrapped"
-      {
-        nativeBuildInputs = [ pkgs.makeWrapper ];
-        buildInputs = [
-          pkgs.xorg.libXcursor
-          pkgs.xorg.libX11
-          pkgs.xorg.libXrender
-          pkgs.xorg.libXi
-          pkgs.xorg.libXfixes
-          pkgs.xorg.libXext
-        ];
-      }
-      ''
-        mkdir -p $out/bin
-        makeWrapper ${inputs.niri.packages.${pkgs.system}.niri-unstable}/bin/niri $out/bin/niri \
-          --set LD_LIBRARY_PATH "${pkgs.xorg.libXcursor}/lib:${pkgs.xorg.libX11}/lib:${pkgs.xorg.libXrender}/lib:${pkgs.xorg.libXi}/lib:${pkgs.xorg.libXfixes}/lib:${pkgs.xorg.libXext}/lib" \
-          --set WINIT_UNIX_BACKEND wayland \
-          --set WINIT_BACKEND wayland \
-          --set WINIT_PLATFORM wayland \
-          --unset DISPLAY \
-          --unset XAUTHORITY \
-          --prefix PATH : ${pkgs.xorg.libXcursor}/bin
-      '';
+    package =
+      pkgs.runCommand "niri-wrapped"
+        {
+          nativeBuildInputs = [ pkgs.makeWrapper ];
+          buildInputs = [
+            pkgs.xorg.libXcursor
+            pkgs.xorg.libX11
+            pkgs.xorg.libXrender
+            pkgs.xorg.libXi
+            pkgs.xorg.libXfixes
+            pkgs.xorg.libXext
+          ];
+        }
+        ''
+          mkdir -p $out/bin
+          makeWrapper ${inputs.niri.packages.${pkgs.system}.niri-unstable}/bin/niri $out/bin/niri \
+            --set LD_LIBRARY_PATH "${pkgs.xorg.libXcursor}/lib:${pkgs.xorg.libX11}/lib:${pkgs.xorg.libXrender}/lib:${pkgs.xorg.libXi}/lib:${pkgs.xorg.libXfixes}/lib:${pkgs.xorg.libXext}/lib" \
+            --set WINIT_UNIX_BACKEND wayland \
+            --set WINIT_BACKEND wayland \
+            --set WINIT_PLATFORM wayland \
+            --unset DISPLAY \
+            --unset XAUTHORITY \
+            --prefix PATH : ${pkgs.xorg.libXcursor}/bin
+        '';
   };
 
   # XDG Portal configuration - CRITICAL for file dialogs and screen sharing
@@ -123,15 +140,13 @@
   services.libinput = {
     enable = true;
     touchpad = {
-       accelSpeed = "-0.5";        # 50% slower than default
-      accelProfile = "flat";      # Predictable linear movement
-      disableWhileTyping = true;  # Prevent cursor jumps while typing
-      tapping = true;             # Enable tap-to-click (required for Niri)
-      naturalScrolling = false;   # Let Niri handle scroll direction
+      accelSpeed = "-0.5"; # 50% slower than default
+      accelProfile = "flat"; # Predictable linear movement
+      disableWhileTyping = true; # Prevent cursor jumps while typing
+      tapping = true; # Enable tap-to-click (required for Niri)
+      naturalScrolling = false; # Let Niri handle scroll direction
+    };
   };
-  };
-
-
 
   nixpkgs.config.allowUnfree = true;
 
@@ -202,11 +217,25 @@
     mpv
     kdePackages.gwenview
     libreoffice
-    
+    strawberry
+    jellyfin-media-player
+
     # Utilities
     which
-    
+    p7zip
+    kdePackages.ark
+    ffmpegthumbnailer
+    kdePackages.kio-extras
+    kdePackages.kio-admin
+    blueman
+    networkmanagerapplet
+    swaynotificationcenter
+    tailscale
+    nomachine-client
+    kdePackages.fcitx5-configtool
+
     # Graphics/OpenGL
+
     mesa
     xorg.libXcursor
     xorg.libX11
@@ -221,13 +250,15 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
 
+  services.tailscale.enable = true;
+
   # Ensure D-Bus is running properly
   services.dbus.enable = true;
 
   # Copy the NixOS configuration file and link it from the resulting system (I am using flakes)
   system.copySystemConfiguration = false;
 
-   # Hardware database entries for libinput touchpad settings (Wayland)
+  # Hardware database entries for libinput touchpad settings (Wayland)
   services.udev.extraHwdb = ''
     # Dell touchpad sensitivity adjustments
     evdev:input:b0018v0488p121Fe0100*

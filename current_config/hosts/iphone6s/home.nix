@@ -11,12 +11,10 @@ let
   wallpaperList = builtins.filter isImage (builtins.attrNames wallpapers);
   sortedWallpapers = builtins.sort (a: b: a < b) wallpaperList;
   numWallpapers = builtins.length sortedWallpapers;
-  
+
   # Default to first wallpaper for stylix
-  defaultWallpaper = if numWallpapers > 0 
-    then builtins.elemAt sortedWallpapers 0
-    else "Akai.jpeg";
-  
+  defaultWallpaper = if numWallpapers > 0 then builtins.elemAt sortedWallpapers 0 else "Akai.jpeg";
+
   wallpaperPath = ../../wallpapers + "/${defaultWallpaper}";
 in
 {
@@ -28,14 +26,14 @@ in
   ];
 
   # Ensure portal config files are created
-   xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
-     [preferred]
-     default=gtk
-     org.freedesktop.impl.portal.FileChooser=gtk
-     # Use wlr portal for screencasting on wlroots-based compositors (Niri)
-     org.freedesktop.impl.portal.Screenshot=wlr
-     org.freedesktop.impl.portal.ScreenCast=wlr
-   '';
+  xdg.configFile."xdg-desktop-portal/portals.conf".text = ''
+    [preferred]
+    default=gtk
+    org.freedesktop.impl.portal.FileChooser=gtk
+    # Use wlr portal for screencasting on wlroots-based compositors (Niri)
+    org.freedesktop.impl.portal.Screenshot=wlr
+    org.freedesktop.impl.portal.ScreenCast=wlr
+  '';
 
   home.packages = with pkgs; [
     inputs.antigravity-nix.packages.x86_64-linux.default
@@ -49,6 +47,7 @@ in
     zotero
     opencode
     ollama
+    opencode
     swaybg
     zed-editor
 
@@ -61,9 +60,17 @@ in
     wofi
     kdePackages.dolphin
     kdePackages.okular
-    
+    teams-for-linux
+
     # R Markdown
-    (rWrapper.override { packages = with rPackages; [ rmarkdown knitr tidyverse tinytex ]; })
+    (rWrapper.override {
+      packages = with rPackages; [
+        rmarkdown
+        knitr
+        tidyverse
+        tinytex
+      ];
+    })
     (writeShellScriptBin "rstudio" ''
       export ELECTRON_OZONE_PLATFORM=wayland
       export ELECTRON_OZONE_PLATFORM_HINT=auto
@@ -74,28 +81,28 @@ in
       export ANGLE=swiftshader
       exec ${rstudio}/bin/rstudio --enable-features=UseOzonePlatform --ozone-platform=wayland --disable-gpu --disable-gpu-sandbox --use-gl=angle --use-angle=swiftshader "$@"
     '')
-    
+
     # Daily wallpaper rotation script
     (writeShellScriptBin "set-daily-wallpaper" ''
       WALLPAPER_DIR="${../../wallpapers}"
       WALLPAPERS=($(ls "$WALLPAPER_DIR"/*.{jpg,jpeg,png,gif,bmp,webp} 2>/dev/null | sort))
       NUM_WALLPAPERS=''${#WALLPAPERS[@]}
-      
+
       if [ $NUM_WALLPAPERS -eq 0 ]; then
         echo "No wallpapers found in $WALLPAPER_DIR"
         exit 1
       fi
-      
+
       # Calculate index based on day of year
       DAY_OF_YEAR=$(date +%j)
       INDEX=$((DAY_OF_YEAR % NUM_WALLPAPERS))
       SELECTED_WALLPAPER="''${WALLPAPERS[$INDEX]}"
-      
+
       echo "Setting wallpaper: $SELECTED_WALLPAPER"
-      
+
       # Kill existing swaybg instances
       ${pkgs.procps}/bin/pkill swaybg 2>/dev/null || true
-      
+
       # Set new wallpaper
       ${pkgs.swaybg}/bin/swaybg -i "$SELECTED_WALLPAPER" &
     '')
@@ -124,6 +131,9 @@ in
     SDL_VIDEODRIVER = "wayland";
     _JAVA_AWT_WM_NONREPARENTING = "1";
     WINIT_UNIX_BACKEND = "wayland";
+    GTK_IM_MODULE = "fcitx";
+    QT_IM_MODULE = "fcitx";
+    XMODIFIERS = "@im=fcitx";
   };
 
   stylix = {
@@ -134,7 +144,7 @@ in
     enableReleaseChecks = false;
     # Stylix will extract colors from this image
     image = builtins.path { path = wallpaperPath; };
-    
+
     # Customize opacity for terminals and popups
     opacity = {
       terminal = 0.95;
@@ -151,18 +161,30 @@ in
       "x-scheme-handler/https" = [ "chromium.desktop" ];
       "x-scheme-handler/about" = [ "chromium.desktop" ];
       "x-scheme-handler/unknown" = [ "chromium.desktop" ];
-      
+
       "inode/directory" = [ "org.kde.dolphin.desktop" ];
-      
+
       "application/pdf" = [ "org.kde.okular.desktop" ];
       "application/x-pdf" = [ "org.kde.okular.desktop" ];
       "application/postscript" = [ "org.kde.okular.desktop" ];
-      
+
       "audio/mpeg" = [ "mpv.desktop" ];
       "audio/*" = [ "mpv.desktop" ];
+      "video/mp4" = [ "mpv.desktop" ];
+      "video/x-matroska" = [ "mpv.desktop" ];
+      "video/webm" = [ "mpv.desktop" ];
+      "video/quicktime" = [ "mpv.desktop" ];
+      "video/x-msvideo" = [ "mpv.desktop" ];
+      "video/x-flv" = [ "mpv.desktop" ];
+      "video/mpeg" = [ "mpv.desktop" ];
       "video/*" = [ "mpv.desktop" ];
-      
+
       "image/*" = [ "org.kde.gwenview.desktop" ];
+
+      "application/zip" = [ "org.kde.ark.desktop" ];
+      "application/x-7z-compressed" = [ "org.kde.ark.desktop" ];
+      "application/x-rar" = [ "org.kde.ark.desktop" ];
+      "application/x-tar" = [ "org.kde.ark.desktop" ];
     };
   };
 
