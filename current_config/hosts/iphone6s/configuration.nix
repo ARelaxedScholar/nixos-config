@@ -217,7 +217,7 @@
     mpv
     kdePackages.gwenview
     libreoffice
-    strawberry
+    tauon
     jellyfin-media-player
 
     # Utilities
