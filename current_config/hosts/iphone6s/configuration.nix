@@ -211,7 +211,8 @@
     uv
     R
     pandoc
-    texlive.combined.scheme-medium
+    quarto
+    texlive.combined.scheme-full
 
     # Default applications
     mpv

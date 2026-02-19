@@ -62,25 +62,35 @@ in
     kdePackages.okular
     teams-for-linux
 
-    # R Markdown
-    (rWrapper.override {
-      packages = with rPackages; [
+    # R and RStudio Setup
+    (pkgs.rWrapper.override {
+      packages = with pkgs.rPackages; [
         rmarkdown
         knitr
         tidyverse
+        ggplot2
+        lubridate
         tinytex
+        languageserver
+        htmlwidgets
+        jsonlite
+        evaluate
       ];
     })
-    (writeShellScriptBin "rstudio" ''
-      export ELECTRON_OZONE_PLATFORM=wayland
-      export ELECTRON_OZONE_PLATFORM_HINT=auto
-      export QT_QPA_PLATFORM=wayland
-      export GDK_BACKEND=wayland,x11
-      export NIXOS_OZONE_WL=1
-      export LIBGL_ALWAYS_SOFTWARE=1
-      export ANGLE=swiftshader
-      exec ${rstudio}/bin/rstudio --enable-features=UseOzonePlatform --ozone-platform=wayland --disable-gpu --disable-gpu-sandbox --use-gl=angle --use-angle=swiftshader "$@"
-    '')
+    (pkgs.rstudioWrapper.override {
+      packages = with pkgs.rPackages; [
+        rmarkdown
+        knitr
+        tidyverse
+        ggplot2
+        lubridate
+        tinytex
+        languageserver
+        htmlwidgets
+        jsonlite
+        evaluate
+      ];
+    })
 
     # Daily wallpaper rotation script
     (writeShellScriptBin "set-daily-wallpaper" ''
@@ -134,6 +144,7 @@ in
     GTK_IM_MODULE = "fcitx";
     QT_IM_MODULE = "fcitx";
     XMODIFIERS = "@im=fcitx";
+    GLFW_IM_MODULE = "ibus";
   };
 
   stylix = {
@@ -186,6 +197,58 @@ in
       "application/x-rar" = [ "org.kde.ark.desktop" ];
       "application/x-tar" = [ "org.kde.ark.desktop" ];
     };
+  };
+
+  # Fcitx5 Configuration
+  xdg.configFile."fcitx5/config" = {
+    force = true;
+    text = ''
+      [Hotkey]
+      # Trigger Key
+      TriggerKeys=Shift+space
+      # Enumerate Input Method Forward
+      EnumerateForwardKeys=
+      # Enumerate Input Method Backward
+      EnumerateBackwardKeys=
+      # Enumerate Next Input Method
+      EnumerateNextIMKeys=
+      # Enumerate Previous Input Method
+      EnumeratePrevIMKeys=
+      # Activate Input Method
+      ActivateKeys=
+      # Deactivate Input Method
+      DeactivateKeys=
+      # Toggle Input Method
+      ToggleKeys=Shift+space
+    '';
+  };
+
+  xdg.configFile."fcitx5/profile" = {
+    force = true;
+    text = ''
+      [Groups/0]
+      # Group Name
+      Name=Default
+      # Layout
+      Default Layout=us
+      # Default Input Method
+      DefaultIM=keyboard-us
+
+      [Groups/0/Items/0]
+      # Name
+      Name=keyboard-us
+      # Layout
+      Layout=
+
+      [Groups/0/Items/1]
+      # Name
+      Name=mozc
+      # Layout
+      Layout=
+
+      [GroupOrder]
+      0=Default
+    '';
   };
 
   home.stateVersion = "25.05";

@@ -109,7 +109,7 @@ in
            Mod+Shift+9 { move-column-to-workspace 9; }
 
            // Screenshots
-             Print { spawn "${pkgs.grim}/bin/grim" "-g" "$(${pkgs.slurp}/bin/slurp)" "$(xdg-user-dir PICTURES)/$(date +screenshot_%Y-%m-%d-%H%M%S.png)"; }
+             Mod+P { spawn "${pkgs.grim}/bin/grim" "-g" "$(${pkgs.slurp}/bin/slurp)" "$(xdg-user-dir PICTURES)/$(date +screenshot_%Y-%m-%d-%H%M%S.png)"; }
              Mod+Print { spawn "${pkgs.grim}/bin/grim" "$(xdg-user-dir PICTURES)/$(date +screenshot_%Y-%m-%d-%H%M%S.png)"; }
 
            // Media keys

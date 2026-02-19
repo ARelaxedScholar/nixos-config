@@ -22,6 +22,7 @@
         # stuff that needs to be run
         "exec-once" = [
           "waybar"
+          "fcitx5 -d -r"
         ];
 
       };
