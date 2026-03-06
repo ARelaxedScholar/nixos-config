@@ -23,6 +23,7 @@ in
     ../../modules/niri.nix
     ../../modules/waybar.nix
     ../../modules/zsh.nix
+    ../../modules/zed.nix
   ];
 
   # Ensure portal config files are created
@@ -49,7 +50,6 @@ in
     ollama
     opencode
     swaybg
-    zed-editor
 
     # fonts
     noto-fonts-cjk-sans
