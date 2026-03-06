@@ -16,11 +16,13 @@
       "https://niri.cachix.org"
       "https://walker.cachix.org"
       "https://walker-git.cachix.org"
+      "https://zed.cachix.org"
     ];
     trusted-public-keys = [
       "niri.cachix.org-1:Wv00m07PsuJ90V2jMZW5ajB8PxyYcnyk8TmgV0/2060="
       "walker.cachix.org-1:fG8q+uAaMqhsMxWjwvk0IMb4mFPFLqHjuvfwQxE4oJM="
       "walker-git.cachix.org-1:vmC0ocfPWh0S/vRAQGtChuiZBTAe4wiKDeyyXM0/7pM="
+      "zed.cachix.org-1:/pHQ6dpMsAZk2DiP4WCL0p9YDNKWj2Q5FL20bNmw1cU="
     ];
     trusted-users = [
       "root"
