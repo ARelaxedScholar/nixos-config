@@ -225,6 +225,7 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    home-manager
     gemini-cli
     dbeaver-bin
     bun
