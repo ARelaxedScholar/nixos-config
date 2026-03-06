@@ -15,6 +15,7 @@
     };
     niri.url = "github:sodiboo/niri-flake";
     stylix.url = "github:danth/stylix";
+    zed-editor-flake.url = "github:HPsaucii/zed-editor-flake";
   };
 
   outputs =

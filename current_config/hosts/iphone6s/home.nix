@@ -67,6 +67,7 @@ in
       packages = with pkgs.rPackages; [
         rmarkdown
         knitr
+        car
         tidyverse
         ggplot2
         lubridate
@@ -81,6 +82,7 @@ in
       packages = with pkgs.rPackages; [
         rmarkdown
         knitr
+        car
         tidyverse
         ggplot2
         lubridate

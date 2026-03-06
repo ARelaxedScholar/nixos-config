@@ -12,8 +12,20 @@
 
   # Enabling the experimental features
   nix.settings = {
-    substituters = [ "https://niri.cachix.org" ];
-    trusted-public-keys = [ "niri.cachix.org-1:Wv00m07PsuJ90V2jMZW5ajB8PxyYcnyk8TmgV0/2060=" ];
+    substituters = [
+      "https://niri.cachix.org"
+      "https://walker.cachix.org"
+      "https://walker-git.cachix.org"
+    ];
+    trusted-public-keys = [
+      "niri.cachix.org-1:Wv00m07PsuJ90V2jMZW5ajB8PxyYcnyk8TmgV0/2060="
+      "walker.cachix.org-1:fG8q+uAaMqhsMxWjwvk0IMb4mFPFLqHjuvfwQxE4oJM="
+      "walker-git.cachix.org-1:vmC0ocfPWh0S/vRAQGtChuiZBTAe4wiKDeyyXM0/7pM="
+    ];
+    trusted-users = [
+      "root"
+      "user"
+    ];
     experimental-features = [
       "nix-command"
       "flakes"
@@ -41,6 +53,42 @@
   networking.hostName = "iphone6s";
   networking.networkmanager.enable = true;
   networking.hostId = "deadbeef";
+
+  # setup for eduroam
+  environment.etc."NetworkManager/system-connections/eduroam.nmconnection" = {
+    mode = "0600";
+    text = ''
+      [connection]
+      id=eduroam
+      type=wifi
+
+      [wifi]
+      mode=infrastructure
+      ssid=eduroam
+
+      [wifi-security]
+      key-mgmt=wpa-eap
+
+      [802-1x]
+      eap=peap;
+      identity=akoua067@uottawa.ca
+      anonymous-identity=akoua067@uottawa.ca
+      phase2-auth=mschapv2
+      ca-cert=/etc/ssl/certs/uottawa-bundle.crt
+
+      [ipv4]
+      method=auto
+
+      [ipv6]
+      addr-gen-mode=stable-privacy
+      method=auto
+    '';
+  };
+
+  # Include your cert bundle in the system
+  security.pki.certificateFiles = [
+    ./uottawa-bundle.crt
+  ];
 
   # Set your time zone.
   time.timeZone = "America/New_York";
@@ -175,6 +223,8 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    gemini-cli
+    dbeaver-bin
     bun
     cachix
     chromium

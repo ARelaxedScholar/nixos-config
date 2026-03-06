@@ -6,6 +6,7 @@
 {
   programs.zed-editor = {
     enable = true;
+    package = inputs.zed-editor-flake.packages.${pkgs.system}.zed-editor-bin;
     extensions = [
       "nix"
       "toml"
@@ -103,7 +104,10 @@
         line_height = "comfortable";
         option_as_meta = false;
         button = false;
-        shell = { program = "${pkgs.zsh}/bin/zsh"; args = ["-l"]; };
+        shell = {
+          program = "${pkgs.zsh}/bin/zsh";
+          args = [ "-l" ];
+        };
         toolbar = {
           title = true;
         };
