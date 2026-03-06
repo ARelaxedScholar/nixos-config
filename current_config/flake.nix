@@ -15,6 +15,11 @@
     };
     niri.url = "github:sodiboo/niri-flake";
     stylix.url = "github:danth/stylix";
+    
+    # Official Zed Industries flake
+    zed-industries.url = "github:zed-industries/zed";
+    # Keep the binary flake as well if you want a fallback, 
+    # but zed-industries is what your modules/zed.nix is now using
     zed-editor-flake.url = "github:HPsaucii/zed-editor-flake";
   };
 
@@ -29,6 +34,7 @@
       antigravity-nix,
       stylix,
       niri,
+#      zed-industries,
       ...
     }@inputs:
     {
@@ -36,7 +42,6 @@
         specialArgs = { inherit inputs; };
 
         modules = [
-          # My main (and for the time being only configs)
           ./hosts/iphone6s/configuration.nix
           disko.nixosModules.disko
           ./hosts/iphone6s/disko-configuration.nix
@@ -52,6 +57,9 @@
                 ./hosts/iphone6s/home.nix
               ];
               nixpkgs.config.allowUnfree = true;
+
+              # Tell Stylix to NOT manage Zed's theme, allowing your Dracula setting to work without conflict
+              stylix.targets.zed.enable = false;
             };
           }
         ];

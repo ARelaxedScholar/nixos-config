@@ -7,7 +7,7 @@
 {
   programs.zed-editor = {
     enable = true;
-    package = inputs.zed-editor-flake.packages.${pkgs.system}.zed-editor-bin;
+    package = inputs.zed-industries.packages.${pkgs.system}.default;
     extensions = [
       "nix"
       "toml"
