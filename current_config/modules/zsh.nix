@@ -6,6 +6,11 @@
     autosuggestion.enable = true;
     syntaxHighlighting.enable = true;
 
+    # This is the "secret sauce" for Zsh-specific commands
+    initExtra = ''
+      bindkey -v 
+    '';
+
     profileExtra = ''
       if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
         export DISPLAY=":0"
