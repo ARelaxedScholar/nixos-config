@@ -20,6 +20,7 @@
 
     shellAliases = {
       ll = "ls -la";
+      gpu = "git push";
     };
 
     oh-my-zsh = {
