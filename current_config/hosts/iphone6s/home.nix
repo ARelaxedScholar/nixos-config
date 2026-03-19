@@ -23,7 +23,6 @@ in
     ../../modules/niri.nix
     ../../modules/waybar.nix
     ../../modules/zsh.nix
-    #    ../../modules/zed.nix
   ];
 
   # Ensure portal config files are created
@@ -37,8 +36,14 @@ in
   '';
 
   home.packages = with pkgs; [
-    inputs.antigravity-nix.packages.x86_64-linux.default
-    inputs.evil-helix.packages.x86_64-linux.default
+    inputs.llm-agents.packages.${pkgs.system}.qwen-code
+    inputs.llm-agents.packages.${pkgs.system}.forge
+    inputs.llm-agents.packages.${pkgs.system}.codex
+    inputs.llm-agents.packages.${pkgs.system}.opencode
+    inputs.llm-agents.packages.${pkgs.system}.pi
+    inputs.llm-agents.packages.${pkgs.system}.kilocode
+    inputs.antigravity-nix.packages.${pkgs.system}.default
+    inputs.evil-helix.packages.${pkgs.system}.default
     tree
     obs-studio
     mpv
@@ -46,7 +51,6 @@ in
     obsidian
     reaper
     zotero
-    opencode
     ollama
     opencode
     swaybg

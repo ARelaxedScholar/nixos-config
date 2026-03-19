@@ -15,12 +15,8 @@
     };
     niri.url = "github:sodiboo/niri-flake";
     stylix.url = "github:danth/stylix";
-
-    # Official Zed Industries flake
-    zed-industries.url = "github:zed-industries/zed";
-    # Keep the binary flake as well if you want a fallback,
-    # but zed-industries is what your modules/zed.nix is now using
     zed-editor-flake.url = "github:HPsaucii/zed-editor-flake";
+    llm-agents.url = "github:numtide/llm-agents.nix";
   };
 
   outputs =
@@ -34,7 +30,7 @@
       antigravity-nix,
       stylix,
       niri,
-      #      zed-industries,
+      llm-agents,
       ...
     }@inputs:
     {
