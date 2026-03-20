@@ -38,10 +38,10 @@ in
   home.packages = with pkgs; [
     inputs.llm-agents.packages.${pkgs.system}.qwen-code
     inputs.llm-agents.packages.${pkgs.system}.forge
-    inputs.llm-agents.packages.${pkgs.system}.codex
     inputs.llm-agents.packages.${pkgs.system}.opencode
     inputs.llm-agents.packages.${pkgs.system}.pi
-    inputs.llm-agents.packages.${pkgs.system}.kilocode
+    inputs.llm-agents.packages.${pkgs.system}.kilocode-cli
+    inputs.llm-agents.packages.${pkgs.system}.gemini-cli
     inputs.antigravity-nix.packages.${pkgs.system}.default
     inputs.evil-helix.packages.${pkgs.system}.default
     tree
@@ -52,7 +52,6 @@ in
     reaper
     zotero
     ollama
-    opencode
     swaybg
 
     # fonts
