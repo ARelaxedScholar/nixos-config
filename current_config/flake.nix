@@ -43,18 +43,15 @@
           ./hosts/iphone6s/disko-configuration.nix
           stylix.nixosModules.stylix
           home-manager.nixosModules.home-manager
+
+          # Home Manager Block
           {
             home-manager.useGlobalPkgs = false;
-            home-manager.useUserPackages = true;
+            # home-manager.useUserPackages = true;
             home-manager.extraSpecialArgs = { inherit inputs; };
-
             home-manager.users.user = {
-              imports = [
-                ./hosts/iphone6s/home.nix
-              ];
+              imports = [ ./hosts/iphone6s/home.nix ];
               nixpkgs.config.allowUnfree = true;
-
-              # Tell Stylix to NOT manage Zed's theme, allowing your Dracula setting to work without conflict
               stylix.targets.zed.enable = false;
             };
           }

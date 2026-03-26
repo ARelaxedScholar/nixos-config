@@ -15,6 +15,7 @@
         export QT_QPA_PLATFORM="wayland"
         export GDK_BACKEND="wayland,x11"
         exec niri --session
+        eval "$(zoxide init zsh)"
       fi
     '';
 
@@ -25,7 +26,6 @@
       kc = "kilocode";
       oc = "opencode";
       gem = "gemini";
-
     };
 
     oh-my-zsh = {

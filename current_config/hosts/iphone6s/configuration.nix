@@ -8,6 +8,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ../../modules/kokoro-fastapi.nix
   ];
 
   # Enabling the experimental features
@@ -112,6 +113,13 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # TTS Service
+  services.kokoro-fastapi = {
+    enable = true;
+    port = 8880;
+    openFirewall = false; # Keep false if only local applications need to access the API
+  };
+
   # Enable sound and screen sharing.
   services.pipewire = {
     enable = true;
@@ -204,6 +212,7 @@
 
   environment.shells = with pkgs; [ zsh ];
   programs.zsh.enable = true;
+  programs.fuse.userAllowOther = true;
 
   # Define my user
   users.users.user = {
@@ -215,6 +224,7 @@
       "seat"
       "video"
       "input"
+      "fuse"
     ]; # Enable 'sudo' for the user.
     shell = pkgs.zsh;
   };
@@ -227,6 +237,7 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    sshfs-fuse
     home-manager
     dbeaver-bin
     bun
@@ -310,6 +321,20 @@
   services.openssh.enable = true;
 
   services.tailscale.enable = true;
+
+  fileSystems."/home/user/Documents/SwagWatch_App/remote-engine" = {
+    device = "user@nixos:/mnt/data/swagwatch-engine";
+    fsType = "sshfs";
+    options = [
+      "allow_other"
+      "IdentityFile=/home/user/.ssh/id_rsa"
+      "x-systemd.automount" # Mounts on first access
+      "noauto" # Don't mount immediately at boot
+      "_netdev" # Tells systemd to wait for network
+      "reconnect" # Handle network drops gracefully
+      "ServerAliveInterval=15"
+    ];
+  };
 
   # Ensure D-Bus is running properly
   services.dbus.enable = true;

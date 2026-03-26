@@ -35,6 +35,11 @@ in
     org.freedesktop.impl.portal.ScreenCast=wlr
   '';
 
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+
   home.packages = with pkgs; [
     inputs.llm-agents.packages.${pkgs.system}.qwen-code
     inputs.llm-agents.packages.${pkgs.system}.forge
@@ -136,7 +141,7 @@ in
   home.sessionVariables = {
     EDITOR = "${inputs.evil-helix.packages.x86_64-linux.default}/bin/evil-helix";
     VISUAL = "${inputs.evil-helix.packages.x86_64-linux.default}/bin/evil-helix";
-    BROWSER = "chromium";
+    BROWSER = "firefox";
     LIBINPUT_ACCEL_SPEED = "-0.5";
     LIBINPUT_ACCEL_PROFILE = "flat";
     LIBINPUT_DISABLE_WHILE_TYPING = "1";
@@ -151,6 +156,11 @@ in
     XMODIFIERS = "@im=fcitx";
     GLFW_IM_MODULE = "ibus";
   };
+
+  home.sessionPath = [
+    "$HOME/.cargo/bin"
+    "$HOME/.pi/agent/bin"
+  ];
 
   stylix = {
     enable = true;
