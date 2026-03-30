@@ -47,6 +47,7 @@ in
     inputs.llm-agents.packages.${pkgs.system}.pi
     inputs.llm-agents.packages.${pkgs.system}.kilocode-cli
     inputs.llm-agents.packages.${pkgs.system}.gemini-cli
+    inputs.llm-agents.packages.${pkgs.system}.omp
     inputs.antigravity-nix.packages.${pkgs.system}.default
     inputs.evil-helix.packages.${pkgs.system}.default
     tree
