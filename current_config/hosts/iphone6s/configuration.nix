@@ -208,7 +208,10 @@
     };
   };
 
-  nixpkgs.config.allowUnfree = true;
+nixpkgs.config.allowUnfree = true;
+nixpkgs.config.permittedInsecurePackages = [
+  "electron-38.8.4"
+];
 
   environment.shells = with pkgs; [ zsh ];
   programs.zsh.enable = true;
@@ -237,6 +240,8 @@
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    tmux
+    git-lfs
     sshfs-fuse
     home-manager
     dbeaver-bin
@@ -272,7 +277,6 @@
 
     # Development tools
     nodejs_22
-    nodePackages.npm
     uv
     R
     pandoc
