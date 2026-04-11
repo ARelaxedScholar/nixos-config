@@ -74,6 +74,7 @@ in
     # R and RStudio Setup
     (pkgs.rWrapper.override {
       packages = with pkgs.rPackages; [
+        asbio
         rmarkdown
         knitr
         car
@@ -89,6 +90,7 @@ in
     })
     (pkgs.rstudioWrapper.override {
       packages = with pkgs.rPackages; [
+        asbio
         rmarkdown
         knitr
         car
