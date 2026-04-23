@@ -363,6 +363,21 @@ nixpkgs.config.permittedInsecurePackages = [
     ACTION=="add|change", KERNEL=="event[0-9]*", ENV{ID_VENDOR_ID}=="0488", ENV{ID_MODEL_ID}=="121f", ENV{LIBINPUT_ATTR_ACCEL_SPEED}="-0.5", ENV{LIBINPUT_ATTR_ACCEL_PROFILE}="flat", ENV{LIBINPUT_ATTR_DISABLE_WHILE_TYPING}="1", ENV{LIBINPUT_ATTR_PALM_PRESSURE_THRESHOLD}="250", ENV{LIBINPUT_ATTR_TAP_ENABLED}="1"
   '';
 
+
+  # ZRAM compression and swap file configuration
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
+  };
+
+  # 32GB swap file on disk
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 1024 * 32; # 32GB in MB
+    }
+  ];
   # Should never change this
   system.stateVersion = "25.05";
 }
