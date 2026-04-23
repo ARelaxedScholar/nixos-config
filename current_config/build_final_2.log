@@ -1,0 +1,55 @@
+building the system configuration...
+warning: Git tree '/home/user/nixos-config' is dirty
+evaluation warning: The default value of `gtk.gtk4.theme` has changed from `config.gtk.theme` to `null`.
+                    You are currently using the legacy default (`config.gtk.theme`) because `home.stateVersion` is less than "26.05".
+                    To silence this warning and keep legacy behavior, set:
+                      gtk.gtk4.theme = config.gtk.theme;
+                    To adopt the new default behavior, set:
+                      gtk.gtk4.theme = null;
+evaluation warning: 'system' has been renamed to/replaced by 'stdenv.hostPlatform.system'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXcursor' has been renamed to 'libxcursor'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libX11' has been renamed to 'libx11'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libX11' has been renamed to 'libx11'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXrandr' has been renamed to 'libxrandr'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXrender' has been renamed to 'libxrender'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXrender' has been renamed to 'libxrender'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed to 'libxi'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed to 'libxi'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed to 'libxi'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXfixes' has been renamed to 'libxfixes'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXext' has been renamed to 'libxext'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXext' has been renamed to 'libxext'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXext' has been renamed to 'libxext'
+evaluation warning: 'system' has been renamed to/replaced by 'stdenv.hostPlatform.system'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXcursor' has been renamed to 'libxcursor'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libX11' has been renamed to 'libx11'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXrender' has been renamed to 'libxrender'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed to 'libxi'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXfixes' has been renamed to 'libxfixes'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXext' has been renamed to 'libxext'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXcursor' has been renamed to 'libxcursor'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libX11' has been renamed to 'libx11'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXrender' has been renamed to 'libxrender'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXi' has been renamed to 'libxi'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXfixes' has been renamed to 'libxfixes'
+evaluation warning: The xorg package set has been deprecated, 'xorg.libXext' has been renamed to 'libxext'
+these 9 derivations will be built:
+  /nix/store/gfa0sr68bifg1kwxiglmdfwgh80imcq3-rstudio-2026.01.1+403-wrapper.drv
+  /nix/store/j34m0vxhm4j3j0d0rk6bn8jvmk461nz8-home-manager-path.drv
+  /nix/store/js07klbap71hp1bxxs69qlw2p2wvgflc-activation-script.drv
+  /nix/store/1gb1276nnk9jpln83gwcriwdfbw9p9db-home-manager-generation.drv
+  /nix/store/vhi8ka1908lnjs5ik88xnn8x7h17f07l-unit-home-manager-user.service.drv
+  /nix/store/s1im2i24rsdqszylb31nizfviqpnzhpx-system-units.drv
+  /nix/store/ax7nk054452jcfzs0ir8r5mk9k07clfl-etc.drv
+  /nix/store/529aiig7yqh4h5nh6v6spcxrw8lhh8m6-activate.drv
+  /nix/store/l9injqsik31ms36k5zasg4ndxqvsp679-nixos-system-iphone6s-26.05.20260405.68d8aa3.drv
+building '/nix/store/gfa0sr68bifg1kwxiglmdfwgh80imcq3-rstudio-2026.01.1+403-wrapper.drv'...
+building '/nix/store/j34m0vxhm4j3j0d0rk6bn8jvmk461nz8-home-manager-path.drv'...
+building '/nix/store/js07klbap71hp1bxxs69qlw2p2wvgflc-activation-script.drv'...
+building '/nix/store/1gb1276nnk9jpln83gwcriwdfbw9p9db-home-manager-generation.drv'...
+building '/nix/store/vhi8ka1908lnjs5ik88xnn8x7h17f07l-unit-home-manager-user.service.drv'...
+building '/nix/store/s1im2i24rsdqszylb31nizfviqpnzhpx-system-units.drv'...
+building '/nix/store/ax7nk054452jcfzs0ir8r5mk9k07clfl-etc.drv'...
+building '/nix/store/529aiig7yqh4h5nh6v6spcxrw8lhh8m6-activate.drv'...
+building '/nix/store/l9injqsik31ms36k5zasg4ndxqvsp679-nixos-system-iphone6s-26.05.20260405.68d8aa3.drv'...
+Done. The new configuration is /nix/store/anl6gdzshjjlh6wvlbjafv9sqywrlkms-nixos-system-iphone6s-26.05.20260405.68d8aa3

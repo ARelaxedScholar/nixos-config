@@ -152,7 +152,7 @@
         }
         ''
           mkdir -p $out/bin
-          makeWrapper ${inputs.niri.packages.${pkgs.system}.niri-unstable}/bin/niri $out/bin/niri \
+          makeWrapper ${inputs.niri.packages.${pkgs.system}.niri-stable}/bin/niri $out/bin/niri \
             --set LD_LIBRARY_PATH "${pkgs.xorg.libXcursor}/lib:${pkgs.xorg.libX11}/lib:${pkgs.xorg.libXrender}/lib:${pkgs.xorg.libXi}/lib:${pkgs.xorg.libXfixes}/lib:${pkgs.xorg.libXext}/lib" \
             --set WINIT_UNIX_BACKEND wayland \
             --set WINIT_BACKEND wayland \

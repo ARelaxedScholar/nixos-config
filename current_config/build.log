@@ -1,0 +1,30 @@
+building the system configuration...
+warning: Git tree '/home/user/nixos-config' is dirty
+these 22 derivations will be built:
+  /nix/store/qvih7cgnxcdfzqdpj4csyzbbnipmnpq4-rstudio-2026.01.1+403.drv
+  /nix/store/nx96k8rr1cdp4f88b9kcbf466gbl107a-rstudio-2026.01.1+403-wrapper.drv
+  /nix/store/f18j7lwp6s25ysscn03hjq64sf5rg9v5-home-manager-path.drv
+  /nix/store/0gjwlkhlai1gaaizhk0scqy45wgx28d8-activation-script.drv
+  /nix/store/qr5prk6y4v2k7i68jm1hmvcwv20hrw46-niri-wrapped.drv
+  /nix/store/rfk7vbqfznngzdl8a9vz0q5vq875xdp8-system-path.drv
+  /nix/store/8dzhh203bk2lp4jmywg321z0q4qqb7dp-X-Restart-Triggers-polkit.drv
+  /nix/store/17a2n3h54kjsh8r06spn6naq6x8sr4np-unit-polkit.service.drv
+  /nix/store/17j1diljir3vlri0vs54baajsszvq13i-dbus-1.drv
+  /nix/store/499jf2ha4gjcn6kif6i5vmzjia2ii4f3-system-shutdown.drv
+  /nix/store/rlxrnxzz1gnpg0jrfyv2rbskbl91p873-X-Restart-Triggers-dbus.drv
+  /nix/store/gw5w9kgfz6xzvcfnj9g50lph8bmsjzb9-unit-dbus.service.drv
+  /nix/store/8r7wypdvd8wh1v9zjzl95d2s8spqc4rj-user-units.drv
+  /nix/store/i6kllag4d4qkxzymqcf650nas1p4r0fa-system-generators.drv
+  /nix/store/lp99w0fa3zssr98li5f71msn0v59457y-user-generators.drv
+  /nix/store/g3w1ziz6qwfhban6hrrln1jg03bbciv1-home-manager-generation.drv
+  /nix/store/dxqn1nxnzha89baz1v30grjj54hs65rn-unit-home-manager-user.service.drv
+  /nix/store/m2nq23d19b5gs2bcbk5dpllvinsz3jjh-unit-dbus.service.drv
+  /nix/store/nmms2ayc5jdsq8w92al0ixgv0xg53vzw-system-units.drv
+  /nix/store/7s36bb1n0lbfivs31nairbrvc65w0zv0-etc.drv
+  /nix/store/i3fgxar0yzqj8nf8bcjvk1rsi6mb3fqw-activate.drv
+  /nix/store/k041ibbnnppdh0c33hqli32jkfx2kzmc-nixos-system-iphone6s-26.05.20260405.68d8aa3.drv
+this path will be fetched (26.31 MiB download, 263.86 MiB unpacked):
+  /nix/store/0vq8xdqbi77cvqs8gym04f5yl8bbxxsz-niri-25.08
+warning: ignoring substitute for '/nix/store/0vq8xdqbi77cvqs8gym04f5yl8bbxxsz-niri-25.08' from 'https://niri.cachix.org', as it's not signed by any of the keys in 'trusted-public-keys'
+building '/nix/store/gw5w9kgfz6xzvcfnj9g50lph8bmsjzb9-unit-dbus.service.drv'...
+error: writing to file: Broken pipe

@@ -47,6 +47,8 @@ in
     inputs.llm-agents.packages.${pkgs.system}.pi
     inputs.llm-agents.packages.${pkgs.system}.kilocode-cli
     inputs.llm-agents.packages.${pkgs.system}.gemini-cli
+    inputs.llm-agents.packages.${pkgs.system}.copilot-cli
+    inputs.llm-agents.packages.${pkgs.system}.jules
     inputs.llm-agents.packages.${pkgs.system}.omp
     inputs.antigravity-nix.packages.${pkgs.system}.default
     inputs.evil-helix.packages.${pkgs.system}.default
@@ -88,6 +90,7 @@ in
         evaluate
       ];
     })
+    # rstudio - npmDepsHash fixed in flake.nix overlay (see NixOS/nixpkgs#475882)
     (pkgs.rstudioWrapper.override {
       packages = with pkgs.rPackages; [
         asbio
