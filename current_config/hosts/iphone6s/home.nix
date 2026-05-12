@@ -57,7 +57,53 @@ in
     mpv
     anki
     obsidian
-    reaper
+    (pkgs.runCommand "reaper-wrapped"
+      {
+        nativeBuildInputs = [ pkgs.makeWrapper ];
+      }
+      ''
+        mkdir -p $out/bin $out/share/applications
+        makeWrapper ${pkgs.reaper}/bin/reaper $out/bin/reaper \
+          --prefix LD_LIBRARY_PATH : "${pkgs.pipewire.jack}/lib:${pkgs.lilv}/lib:${pkgs.suil}/lib:${pkgs.lv2}/lib"
+
+        # Copy .desktop file and fix Exec path to wrapped binary
+        if [ -f ${pkgs.reaper}/share/applications/reaper.desktop ]; then
+          sed 's|^Exec=.*|Exec=reaper|' ${pkgs.reaper}/share/applications/reaper.desktop \
+            > $out/share/applications/reaper.desktop
+        fi
+
+        # Copy icons if present
+        if [ -d ${pkgs.reaper}/share/icons ]; then
+          cp -r ${pkgs.reaper}/share/icons $out/share/
+        fi
+      '')
+    reaper-sws-extension
+    reaper-reapack-extension
+
+    # Audio plugins — FOSS, high quality
+    lsp-plugins          # Huge suite: EQ, dynamics, reverb, multiband, etc.
+    guitarix             # Virtual guitar amp + effects (standalone & LV2)
+    gxplugins-lv2        # Extra Guitarix LV2 pedals
+    neural-amp-modeler-lv2 # Neural network amp sim (load free captures from tonehunt.org)
+    airwindows-lv2       # Chris Johnson's plugins — saturation, EQ, compression
+    zam-plugins          # ZamAudio: compressors, EQ, limiter
+    dragonfly-reverb     # Hall-style reverb
+    x42-plugins          # Meters, tuners, utilities by Robin Gareus
+    calf                 # Calf Studio Gear plugins
+
+    # Focusrite Scarlett Solo 3rd Gen tools
+    alsa-scarlett-gui    # GUI for hardware mixer / Air / Pad / monitoring
+    scarlett2            # Firmware management utility
+
+    # JACK / PipeWire routing GUIs
+    qpwgraph             # PipeWire-native patchbay for audio/MIDI routing
+    qjackctl             # Classic JACK control + patchbay with transport
+
+    # Libraries REAPER needs for LV2 plugin scanning
+    lilv                 # LV2 plugin discovery library
+    suil                 # LV2 UI host library
+    lv2                  # LV2 specification / utils
+
     zotero
     ollama
     swaybg
@@ -90,23 +136,23 @@ in
         evaluate
       ];
     })
-    # rstudio - npmDepsHash fixed in flake.nix overlay (see NixOS/nixpkgs#475882)
-    (pkgs.rstudioWrapper.override {
-      packages = with pkgs.rPackages; [
-        asbio
-        rmarkdown
-        knitr
-        car
-        tidyverse
-        ggplot2
-        lubridate
-        tinytex
-        languageserver
-        htmlwidgets
-        jsonlite
-        evaluate
-      ];
-    })
+ # # rstudio - npmDepsHash fixed in flake.nix overlay (see NixOS/nixpkgs#475882)
+ # (pkgs.rstudioWrapper.override {
+ #   packages = with pkgs.rPackages; [
+ #     asbio
+ #     rmarkdown
+ #     knitr
+ #     car
+ #     tidyverse
+ #     ggplot2
+ #     lubridate
+ #     tinytex
+ #     languageserver
+ #     htmlwidgets
+ #     jsonlite
+ #     evaluate
+ #   ];
+ # })
 
     # Daily wallpaper rotation script
     (writeShellScriptBin "set-daily-wallpaper" ''
@@ -161,6 +207,9 @@ in
     QT_IM_MODULE = "fcitx";
     XMODIFIERS = "@im=fcitx";
     GLFW_IM_MODULE = "ibus";
+    # REAPER needs lilv in LD_LIBRARY_PATH to scan LV2 plugins,
+    # and pipewire.jack so REAPER can load the JACK driver (PipeWire's libjack)
+    LD_LIBRARY_PATH = "${pkgs.lilv}/lib:${pkgs.suil}/lib:${pkgs.lv2}/lib:${pkgs.pipewire.jack}/lib";
   };
 
   home.sessionPath = [
@@ -271,6 +320,31 @@ in
       0=Default
     '';
   };
+
+  # Symlink standard plugin dirs to nix profile so REAPER finds them
+  # without relying on env vars (REAPER's scanner may not inherit them)
+  home.activation.linkAudioPlugins = config.lib.dag.entryAfter [ "writeBoundary" ] ''
+    # Remove old dirs/symlinks and recreate pointing to current profile
+    for dir in .lv2 .vst .vst3 .clap; do
+      target="$HOME/$dir"
+      source="$HOME/.nix-profile/lib/$dir"
+      if [ -L "$target" ] || [ -e "$target" ]; then
+        rm -rf "$target"
+      fi
+      if [ -d "$source" ]; then
+        ln -s "$source" "$target"
+      fi
+    done
+
+    # Fix any comma-separated paths REAPER may have written in its ini
+    if [ -f "$HOME/.config/REAPER/reaper.ini" ]; then
+      ${pkgs.gnused}/bin/sed -i 's|,~/.nix-profile/lib/|;~/.nix-profile/lib/|g' "$HOME/.config/REAPER/reaper.ini"
+      ${pkgs.gnused}/bin/sed -i 's|,%CLAP_PATH%|;%CLAP_PATH%|g' "$HOME/.config/REAPER/reaper.ini"
+    fi
+
+    # Clear REAPER's plugin caches so it rescans fresh on next launch
+    rm -f "$HOME/.config/REAPER/reaper-vstplugins64.ini"
+  '';
 
   home.stateVersion = "25.05";
 }

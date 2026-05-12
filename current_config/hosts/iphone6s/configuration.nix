@@ -5,6 +5,159 @@
   pkgs,
   ...
 }:
+let
+  ocrmypdf-paddleocr-plugin = pkgs.python3Packages.buildPythonPackage rec {
+    pname = "ocrmypdf-paddleocr";
+    version = "0.1.1";
+    src = pkgs.fetchFromGitHub {
+      owner = "clefru";
+      repo = "ocrmypdf-paddleocr";
+      rev = "master";
+      sha256 = "sha256-Cai/IqKdrL8L2ymT1z/DanE4j9xA3U2g0yVIo9viitE=";
+    };
+    pyproject = true;
+    nativeBuildInputs = with pkgs.python3Packages; [
+      setuptools
+      setuptools-scm
+    ];
+    propagatedBuildInputs = with pkgs.python3Packages; [
+      ocrmypdf
+      (paddleocr.override { paddlepaddle = paddlepaddle; })
+      paddlepaddle
+      pillow
+    ];
+    doCheck = false;
+    pythonImportsCheck = [ "ocrmypdf_paddleocr" ];
+  };
+
+  python3WithPaddle = pkgs.python3.withPackages (
+    ps: with ps; [
+      ocrmypdf
+      ocrmypdf-paddleocr-plugin
+    ]
+  );
+
+  ocrmypdf-paddleocr = pkgs.writeShellScriptBin "ocrmypdf-paddleocr" ''
+    exec ${python3WithPaddle}/bin/ocrmypdf "$@"
+  '';
+
+  studio-aggregate = pkgs.writeShellScriptBin "studio-aggregate" ''
+    PL="${pkgs.pipewire}/bin/pw-link"
+    PACTL="${pkgs.pulseaudio}/bin/pactl"
+
+    SINK="full_studio_input"
+
+    log() { echo "[studio-aggregate] $*"; }
+
+    # Wait for PipeWire + PulseAudio bridge to be ready
+    for i in $(seq 1 60); do
+      if $PACTL info &>/dev/null; then
+        break
+      fi
+      log "Waiting for PipeWire/PulseAudio... ($i/60)"
+      sleep 1
+    done
+
+    # Create the aggregate sink if it doesn't exist
+    if $PACTL list sinks short | grep -q "$SINK"; then
+      log "Sink $SINK already exists"
+    else
+      log "Creating null sink..."
+      $PACTL load-module module-null-sink \
+        sink_name="$SINK" \
+        sink_properties='device.description="3-Channel Recording (Focusrite + USB Mic)" node.name="full_studio_input" node.description="3-Channel Recording (Focusrite + USB Mic)"' \
+        channels=4 \
+        channel_map=front-left,front-right,side-left,side-right \
+        || { log "pactl load-module failed"; exit 1; }
+      sleep 2
+    fi
+
+    log "All sinks:"
+    $PACTL list sinks short
+
+    # Get sink playback (input) ports
+    IN_PORTS="$($PL -i 2>/dev/null || true)"
+    SINK_PORTS=$(echo "$IN_PORTS" | grep -i "$SINK" || true)
+    P1=$(echo "$SINK_PORTS" | grep -E '(playback|in)_(FL|1)' | head -1)
+    P2=$(echo "$SINK_PORTS" | grep -E '(playback|in)_(FR|2)' | head -1)
+    P3=$(echo "$SINK_PORTS" | grep -E '(playback|in)_(SL|RL|3)' | head -1)
+    log "Sink ports: P1='$P1' P2='$P2' P3='$P3'"
+
+    # --- Strategy 1: use pw-link -o (works when devices are active) ---
+    OUT_PORTS="$($PL -o 2>/dev/null || true)"
+    log "pw-link -o ports:"
+    echo "$OUT_PORTS"
+
+    FOCUSRITE_PORTS=$(echo "$OUT_PORTS" | grep -iE "Focusrite|Scarlett" || true)
+    MIC_PORTS=$(echo "$OUT_PORTS" | grep -iE "Condenser|Microphone|Generic.*USB" || true)
+
+    # --- Strategy 2: fallback to pactl source names + common port suffixes ---
+    try_link_source() {
+      local src="$1" dst="$2" label="$3"
+      [ -n "$src" ] || return 1
+      [ -n "$dst" ] || return 1
+      for suffix in capture_AUX0 capture_AUX1 capture_1 capture_FL capture_MONO out_1 out_FL out_MONO; do
+        local port="$src:$suffix"
+        local err
+        err="$($PL "$port" "$dst" 2>&1)" && { log "$label linked via $port"; return 0; }
+        if echo "$err" | grep -qi "file exists"; then
+          log "$label already linked ($port)"
+          return 0
+        fi
+      done
+      return 1
+    }
+
+    # Helper: link two ports, treating "already linked" as success
+    link_port() {
+      local src="$1" dst="$2" label="$3"
+      [ -n "$src" ] || { log "$label: missing source"; return 1; }
+      [ -n "$dst" ] || { log "$label: missing destination"; return 1; }
+      local err
+      err="$($PL "$src" "$dst" 2>&1)" && { log "$label linked"; return 0; }
+      if echo "$err" | grep -qi "file exists"; then
+        log "$label already linked"
+      else
+        log "$label link failed: $err"
+      fi
+    }
+
+    if [ -z "$FOCUSRITE_PORTS" ] || [ -z "$MIC_PORTS" ]; then
+      log "pw-link -o didn't show devices; falling back to pactl source names"
+      log "PulseAudio sources:"
+      $PACTL list sources short || true
+
+      FOCUS_SRC=$($PACTL list sources short | grep -iE "Focusrite|Scarlett" | awk '{print $2}' | head -1)
+      MIC_SRC=$($PACTL list sources short | grep -iE "Condenser|Microphone|Generic.*USB" | awk '{print $2}' | head -1)
+      log "Focus source='$FOCUS_SRC' Mic source='$MIC_SRC'"
+
+      if [ -n "$FOCUS_SRC" ] && [ -n "$P1" ] && [ -n "$P2" ]; then
+        try_link_source "$FOCUS_SRC" "$P1" "Focusrite L" || \
+          try_link_source "$FOCUS_SRC" "$P1" "Focusrite L (2nd try)"
+        try_link_source "$FOCUS_SRC" "$P2" "Focusrite R" || \
+          try_link_source "$FOCUS_SRC" "$P2" "Focusrite R (2nd try)"
+      fi
+      if [ -n "$MIC_SRC" ] && [ -n "$P3" ]; then
+        try_link_source "$MIC_SRC" "$P3" "Mic" || \
+          try_link_source "$MIC_SRC" "$P3" "Mic (2nd try)"
+      fi
+    else
+      # Strategy 1 succeeded: link the discovered ports directly
+      F1=$(echo "$FOCUSRITE_PORTS" | grep -E '(capture|out)_(AUX0|1|FL|MONO)' | head -1)
+      F2=$(echo "$FOCUSRITE_PORTS" | grep -E '(capture|out)_(AUX1|2|FR)' | head -1)
+      M1=$(echo "$MIC_PORTS" | grep -E '(capture|out)_(AUX0|1|FL|MONO)' | head -1)
+
+      link_port "$F1" "$P1" "Focusrite L"
+      link_port "$F2" "$P2" "Focusrite R"
+      link_port "$M1" "$P3" "Mic"
+    fi
+
+    log "Aggregate sink $SINK ready. Holding..."
+    while true; do
+      sleep 60
+    done
+  '';
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -36,8 +189,9 @@
       "flakes"
     ];
   };
-
   # Use the systemd-boot EFI boot loader.
+  boot.supportedFilesystems = [ "fuse" ];
+
   boot.loader.systemd-boot.enable = false;
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
@@ -51,6 +205,8 @@
   services.seatd.logLevel = "info";
   # polkit for authentication
   security.polkit.enable = true;
+  # RTKit for PipeWire real-time scheduling (critical for pro audio)
+  security.rtkit.enable = true;
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages;
@@ -124,6 +280,9 @@
   services.pipewire = {
     enable = true;
     pulse.enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    jack.enable = true;
     wireplumber.enable = true;
   };
 
@@ -208,10 +367,10 @@
     };
   };
 
-nixpkgs.config.allowUnfree = true;
-nixpkgs.config.permittedInsecurePackages = [
-  "electron-38.8.4"
-];
+  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-38.8.4"
+  ];
 
   environment.shells = with pkgs; [ zsh ];
   programs.zsh.enable = true;
@@ -226,6 +385,7 @@ nixpkgs.config.permittedInsecurePackages = [
       "docker"
       "seat"
       "video"
+      "audio"
       "input"
       "fuse"
     ]; # Enable 'sudo' for the user.
@@ -240,6 +400,8 @@ nixpkgs.config.permittedInsecurePackages = [
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    imagemagick
+    tesseract
     tmux
     git-lfs
     sshfs-fuse
@@ -300,6 +462,9 @@ nixpkgs.config.permittedInsecurePackages = [
     blueman
     networkmanagerapplet
     swaynotificationcenter
+    pavucontrol
+    pulseaudio
+    studio-aggregate
     tailscale
     nomachine-client
     kdePackages.fcitx5-configtool
@@ -315,6 +480,9 @@ nixpkgs.config.permittedInsecurePackages = [
     xorg.libXfixes
     xorg.libXext
     libxcb
+    # OCR tools
+    ocrmypdf
+    ocrmypdf-paddleocr
   ];
   # configuration.nix or home-manager
   programs.direnv = {
@@ -363,7 +531,6 @@ nixpkgs.config.permittedInsecurePackages = [
     ACTION=="add|change", KERNEL=="event[0-9]*", ENV{ID_VENDOR_ID}=="0488", ENV{ID_MODEL_ID}=="121f", ENV{LIBINPUT_ATTR_ACCEL_SPEED}="-0.5", ENV{LIBINPUT_ATTR_ACCEL_PROFILE}="flat", ENV{LIBINPUT_ATTR_DISABLE_WHILE_TYPING}="1", ENV{LIBINPUT_ATTR_PALM_PRESSURE_THRESHOLD}="250", ENV{LIBINPUT_ATTR_TAP_ENABLED}="1"
   '';
 
-
   # ZRAM compression and swap file configuration
   zramSwap = {
     enable = true;
@@ -374,10 +541,24 @@ nixpkgs.config.permittedInsecurePackages = [
   # 32GB swap file on disk
   swapDevices = [
     {
-      device = "/var/lib/swapfile";
+      device = "/dev/zvol/zroot/swap";
       size = 1024 * 32; # 32GB in MB
     }
   ];
+  systemd.user.services.studio-aggregate = {
+    description = "Studio aggregate audio sink (Focusrite + USB mic)";
+    bindsTo = [ "pipewire.service" "wireplumber.service" ];
+    after = [ "pipewire.service" "wireplumber.service" "pipewire-pulse.service" ];
+    wantedBy = [ "default.target" ];
+    environment.XDG_RUNTIME_DIR = "%t";
+    serviceConfig = {
+      Type = "simple";
+      ExecStart = "${studio-aggregate}/bin/studio-aggregate";
+      Restart = "on-failure";
+      RestartSec = 10;
+    };
+  };
+
   # Should never change this
   system.stateVersion = "25.05";
 }
