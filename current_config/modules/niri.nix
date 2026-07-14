@@ -8,14 +8,31 @@ let
   # Define your preferred programs here
   terminal = "${pkgs.kitty}/bin/kitty";
   browser = "${pkgs.firefox}/bin/firefox";
-  launcher = "${pkgs.rofi}/bin/rofi";
+  launcher = "${pkgs.wofi}/bin/wofi";
   fileManager = "${pkgs.kdePackages.dolphin}/bin/dolphin";
+
+  screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
+    set -euo pipefail
+    PICS="$(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)"
+    mkdir -p "$PICS"
+    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" "$PICS/screenshot_$(date +%Y-%m-%d-%H%M%S).png" 2>/tmp/screenshot-area.log
+  '';
+
+  screenshot-full = pkgs.writeShellScriptBin "screenshot-full" ''
+    set -euo pipefail
+    PICS="$(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)"
+    mkdir -p "$PICS"
+    ${pkgs.grim}/bin/grim "$PICS/screenshot_$(date +%Y-%m-%d-%H%M%S).png" 2>/tmp/screenshot-full.log
+  '';
 in
 {
   home.packages = with pkgs; [
-    rofi
+    wofi
     grim # for screenshots
     slurp # for area selection
+    xdg-user-dirs # provides xdg-user-dir for screenshot paths
+    screenshot-area
+    screenshot-full
   ];
 
   xdg.configFile."niri/config.kdl" = {
@@ -49,14 +66,13 @@ in
        // Run the daily wallpaper selector script at startup
        spawn-at-startup "set-daily-wallpaper"
        spawn-at-startup "waybar"
-       spawn-at-startup "swaync"
        spawn-at-startup "fcitx5" "-d"
        spawn-at-startup "blueman-applet"
        spawn-at-startup "nm-applet"
 
        binds {
            // Program launchers
-            Mod+Space { spawn "${launcher}" "-show" "drun"; }
+            Mod+Space { spawn "${launcher}" "--show" "drun"; }
             Mod+Return { spawn "${terminal}"; }
             Mod+E { spawn "${browser}"; }
             Mod+F { spawn "${fileManager}"; }
@@ -109,8 +125,8 @@ in
            Mod+Shift+9 { move-column-to-workspace 9; }
 
            // Screenshots
-             Mod+P { spawn "${pkgs.grim}/bin/grim" "-g" "$(${pkgs.slurp}/bin/slurp)" "$(xdg-user-dir PICTURES)/$(date +screenshot_%Y-%m-%d-%H%M%S.png)"; }
-             Mod+Print { spawn "${pkgs.grim}/bin/grim" "$(xdg-user-dir PICTURES)/$(date +screenshot_%Y-%m-%d-%H%M%S.png)"; }
+             Mod+P { spawn "${screenshot-area}/bin/screenshot-area"; }
+             Mod+Print { spawn "${screenshot-full}/bin/screenshot-full"; }
 
            // Media keys
             XF86AudioRaiseVolume { spawn "${pkgs.wireplumber}/bin/wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "0.1+"; }

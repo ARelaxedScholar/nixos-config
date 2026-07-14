@@ -6,7 +6,10 @@
   ...
 }:
 let
-  ocrmypdf-paddleocr-plugin = pkgs.python3Packages.buildPythonPackage rec {
+  pyPaddle = pkgs.python313;
+  pyPaddlePackages = pkgs.python313Packages;
+
+  ocrmypdf-paddleocr-plugin = pyPaddlePackages.buildPythonPackage rec {
     pname = "ocrmypdf-paddleocr";
     version = "0.1.1";
     src = pkgs.fetchFromGitHub {
@@ -16,11 +19,11 @@ let
       sha256 = "sha256-Cai/IqKdrL8L2ymT1z/DanE4j9xA3U2g0yVIo9viitE=";
     };
     pyproject = true;
-    nativeBuildInputs = with pkgs.python3Packages; [
+    nativeBuildInputs = with pyPaddlePackages; [
       setuptools
       setuptools-scm
     ];
-    propagatedBuildInputs = with pkgs.python3Packages; [
+    propagatedBuildInputs = with pyPaddlePackages; [
       ocrmypdf
       (paddleocr.override { paddlepaddle = paddlepaddle; })
       paddlepaddle
@@ -29,8 +32,7 @@ let
     doCheck = false;
     pythonImportsCheck = [ "ocrmypdf_paddleocr" ];
   };
-
-  python3WithPaddle = pkgs.python3.withPackages (
+  python3WithPaddle = pyPaddle.withPackages (
     ps: with ps; [
       ocrmypdf
       ocrmypdf-paddleocr-plugin
@@ -40,6 +42,18 @@ let
   ocrmypdf-paddleocr = pkgs.writeShellScriptBin "ocrmypdf-paddleocr" ''
     exec ${python3WithPaddle}/bin/ocrmypdf "$@"
   '';
+
+  kimi-code = pkgs.symlinkJoin {
+    name = "kimi-code";
+    paths = [
+      (pkgs.writeShellScriptBin "kimi" ''
+        exec ${pkgs.uv}/bin/uv tool run --python ${pkgs.python313}/bin/python3.13 kimi-cli "$@"
+      '')
+      (pkgs.writeShellScriptBin "kimi-cli" ''
+        exec ${pkgs.uv}/bin/uv tool run --python ${pkgs.python313}/bin/python3.13 kimi-cli "$@"
+      '')
+    ];
+  };
 
   studio-aggregate = pkgs.writeShellScriptBin "studio-aggregate" ''
     PL="${pkgs.pipewire}/bin/pw-link"
@@ -162,11 +176,29 @@ in
   imports = [
     ./hardware-configuration.nix
     ../../modules/kokoro-fastapi.nix
+    ../../modules/uriel
   ];
+
+  # Uriel life-OS umbrella service. Clause (X/social posting) is the first
+  # submodule; more attach under services.uriel.* later.
+  services.uriel = {
+    enable = true;
+    # Disabled by default because it builds the local Uriel Rust workspace,
+    # which is not available from a binary cache.
+    clause.enable = false;
+    clause.engineUrl = "https://engine.swagwatch.app";
+    clause.environmentFile = "/etc/uriel/clause.env";
+    # clause.dryRun defaults to true — Approve never posts to X.
+    # To enable the SwagWatch feed and (later) live posting, create
+    # /etc/uriel/clause.env with ENGINE_API_KEY / DEEPSEEK_API_KEY / X_* tokens,
+    # then set:  clause.environmentFile = "/etc/uriel/clause.env";
+    # and, only after smoke-testing, clause.dryRun = false;
+  };
 
   # Enabling the experimental features
   nix.settings = {
     substituters = [
+      "https://cache.nixos.org"
       "https://niri.cachix.org"
       "https://walker.cachix.org"
       "https://walker-git.cachix.org"
@@ -174,6 +206,7 @@ in
       "https://cache.numtide.com"
     ];
     trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "niri.cachix.org-1:Wv00m07PsuJ90V2jMZW5ajB8PxyYcnyk8TmgV0/2060="
       "walker.cachix.org-1:fG8q+uAaMqhsMxWjwvk0IMb4mFPFLqHjuvfwQxE4oJM="
       "walker-git.cachix.org-1:vmC0ocfPWh0S/vRAQGtChuiZBTAe4wiKDeyyXM0/7pM="
@@ -195,14 +228,66 @@ in
   boot.loader.systemd-boot.enable = false;
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
+  boot.loader.grub.device = lib.mkForce "nodev";
   boot.loader.grub.efiInstallAsRemovable = lib.mkForce false;
   boot.loader.efi.canTouchEfiVariables = lib.mkForce true;
+
+  # === ZFS + Kernel tuning to prevent system freezes under load ===
+  # Root cause: ZFS ARC had no cap and could consume ~14 GiB of 15 GiB RAM.
+  # Under agentic loads, kernel reclaims ARC pages -> ARC eviction writes
+  # dirty pages -> ZFS+LUKS write amplification -> I/O queue saturates ->
+  # PostgreSQL checkpoint stalls (269s seen!) -> system I/O-freeze.
+  #
+  # Fix: cap ARC at 6 GiB (40% of RAM), reduce dirty data limits, lower
+  # swappiness to avoid swapping ARC pages under memory pressure.
+  boot.kernelParams = [
+    # Cap ZFS ARC at 6 GiB (6,442,450,944 bytes) — was unlimited (14.4 GiB).
+    # Prevents ARC from consuming all RAM and starving applications.
+    "zfs.zfs_arc_max=6442450944"
+    # Reduce max dirty data from 1.54 GiB to 768 MiB (804,782,080 bytes).
+    # Prevents huge write bursts that stall the I/O path.
+    "zfs.zfs_dirty_data_max=804782080"
+    # Start throttling writes at 30% of dirty data max (down from 60%).
+    # Smoother write throttling instead of sudden spikes.
+    "zfs.zfs_delay_min_dirty_percent=30"
+    # Flush dirty data to sync targets at 10% of max (keep default).
+    "zfs.zfs_dirty_data_sync_percent=10"
+  ];
+  # Sysctl tuning for memory pressure handling
+  boot.kernel.sysctl = {
+    # Swappiness 60 — actively use the 39 GiB of swap (zram + zvol) under
+    # memory pressure. Was 10, which made swap decorative: the kernel would
+    # rather thrash RAM+I/O than page out cold cache pages. With Rust
+    # compilation (LLVM codegen can eat 4-6 GiB per parallel job), swap
+    # must actually be used to prevent ZFS eviction I/O death spiral.
+    "vm.swappiness" = lib.mkOverride 0 60;
+    # Reduce vfs_cache_pressure from 100 to 50 — less aggressive reclaim
+    # of dentries/inodes, which reduces read I/O under memory pressure.
+    "vm.vfs_cache_pressure" = lib.mkOverride 0 50;
+    # Strict overcommit — LLVM codegen loves to mmap huge regions then
+    # touch them lazily. With heuristic overcommit (0), the kernel doesn't
+    # reserve swap for these promises, and by the time rustc tries to use
+    # all of them, ARC eviction + LUKS write amplification have already
+    # locked up the I/O path. Strict overcommit forces allocation to fail
+    # early instead of letting the system freeze.
+    "vm.overcommit_memory" = 2;
+    "vm.overcommit_ratio" = 50;
+  };
 
   # bluetooth
   hardware.bluetooth.enable = true;
   # seatd for session management (required for niri)
   services.seatd.enable = true;
   services.seatd.logLevel = "info";
+  # The generated notify wrapper is not completing readiness notification on
+  # this system, so systemd kills seatd after 90s and takes Niri with it.
+  systemd.services.seatd.serviceConfig = {
+    Type = lib.mkForce "simple";
+    ExecStart = lib.mkForce "${pkgs.seatd}/bin/seatd -n 1 -u root -g seat -l info";
+    NotifyAccess = lib.mkForce "none";
+    TimeoutStartSec = "0";
+  };
+  systemd.services.seatd.restartIfChanged = lib.mkForce true;
   # polkit for authentication
   security.polkit.enable = true;
   # RTKit for PipeWire real-time scheduling (critical for pro audio)
@@ -210,6 +295,20 @@ in
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages;
+
+  # Early OOM — kill the worst memory offender (typically rustc/cargo)
+  # BEFORE the system enters the ZFS eviction → I/O queue saturation →
+  # screen freeze death spiral. systemd-oomd only acts on cgroup-level
+  # pressure and doesn't prevent system-wide I/O lockup.
+  services.earlyoom = {
+    enable = true;
+    extraArgs = [
+      "--prefer"
+      "(.*cargo.*)|(.*rustc.*)"
+      "--avoid"
+      "^(niri|Xwayland|systemd|kitty|waybar)$"
+    ];
+  };
 
   networking.hostName = "iphone6s";
   networking.networkmanager.enable = true;
@@ -301,24 +400,24 @@ in
         {
           nativeBuildInputs = [ pkgs.makeWrapper ];
           buildInputs = [
-            pkgs.xorg.libXcursor
-            pkgs.xorg.libX11
-            pkgs.xorg.libXrender
-            pkgs.xorg.libXi
-            pkgs.xorg.libXfixes
-            pkgs.xorg.libXext
+            pkgs.libxcursor
+            pkgs.libx11
+            pkgs.libxrender
+            pkgs.libxi
+            pkgs.libxfixes
+            pkgs.libxext
           ];
         }
         ''
           mkdir -p $out/bin
-          makeWrapper ${inputs.niri.packages.${pkgs.system}.niri-stable}/bin/niri $out/bin/niri \
-            --set LD_LIBRARY_PATH "${pkgs.xorg.libXcursor}/lib:${pkgs.xorg.libX11}/lib:${pkgs.xorg.libXrender}/lib:${pkgs.xorg.libXi}/lib:${pkgs.xorg.libXfixes}/lib:${pkgs.xorg.libXext}/lib" \
+          makeWrapper ${pkgs.niri}/bin/niri $out/bin/niri \
+            --set LD_LIBRARY_PATH "${pkgs.libxcursor}/lib:${pkgs.libx11}/lib:${pkgs.libxrender}/lib:${pkgs.libxi}/lib:${pkgs.libxfixes}/lib:${pkgs.libxext}/lib" \
             --set WINIT_UNIX_BACKEND wayland \
             --set WINIT_BACKEND wayland \
             --set WINIT_PLATFORM wayland \
             --unset DISPLAY \
             --unset XAUTHORITY \
-            --prefix PATH : ${pkgs.xorg.libXcursor}/bin
+            --prefix PATH : ${pkgs.libxcursor}/bin
         '';
   };
 
@@ -371,6 +470,12 @@ in
   nixpkgs.config.permittedInsecurePackages = [
     "electron-38.8.4"
   ];
+  # nixpkgs.overlays = [
+  #   # NoMachine disabled automated downloads for 9.4.14.
+  #   # Re-enable if/when nixpkgs fixes the upstream URL or you manually
+  #   # obtain the tarball and use requireFile.
+  #   (final: prev: { })
+  # ];
 
   environment.shells = with pkgs; [ zsh ];
   programs.zsh.enable = true;
@@ -400,6 +505,8 @@ in
 
   # List packages installed in system profile.
   environment.systemPackages = with pkgs; [
+    xclip
+    posting
     imagemagick
     tesseract
     tmux
@@ -435,15 +542,11 @@ in
     # Portal debugging tools
     xdg-utils
     dbus
-    zoom-us
 
     # Development tools
     nodejs_22
     uv
-    R
     pandoc
-    quarto
-    texlive.combined.scheme-full
 
     # Default applications
     mpv
@@ -451,6 +554,7 @@ in
     libreoffice
     tauon
     jellyfin-media-player
+    kdePackages.kdenlive
 
     # Utilities
     which
@@ -466,19 +570,20 @@ in
     pulseaudio
     studio-aggregate
     tailscale
-    nomachine-client
+    kimi-code
+    # nomachine-client  # disabled: upstream download URL broken (returns HTML)
     kdePackages.fcitx5-configtool
 
     # Graphics/OpenGL
 
     mesa
-    xorg.libXcursor
-    xorg.libX11
-    xorg.libXrandr
-    xorg.libXrender
-    xorg.libXi
-    xorg.libXfixes
-    xorg.libXext
+    libxcursor
+    libx11
+    libxrandr
+    libxrender
+    libxi
+    libxfixes
+    libxext
     libxcb
     # OCR tools
     ocrmypdf
@@ -547,8 +652,15 @@ in
   ];
   systemd.user.services.studio-aggregate = {
     description = "Studio aggregate audio sink (Focusrite + USB mic)";
-    bindsTo = [ "pipewire.service" "wireplumber.service" ];
-    after = [ "pipewire.service" "wireplumber.service" "pipewire-pulse.service" ];
+    bindsTo = [
+      "pipewire.service"
+      "wireplumber.service"
+    ];
+    after = [
+      "pipewire.service"
+      "wireplumber.service"
+      "pipewire-pulse.service"
+    ];
     wantedBy = [ "default.target" ];
     environment.XDG_RUNTIME_DIR = "%t";
     serviceConfig = {
