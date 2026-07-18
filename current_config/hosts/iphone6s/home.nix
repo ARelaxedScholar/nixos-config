@@ -139,6 +139,7 @@ in
     inputs.evil-helix.packages.${pkgs.system}.default
     tree
     obs-studio
+    obsidian
     mpv
     anki
     upscayl

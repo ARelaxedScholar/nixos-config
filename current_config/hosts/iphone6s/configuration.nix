@@ -313,6 +313,7 @@ in
   networking.hostName = "iphone6s";
   networking.networkmanager.enable = true;
   networking.hostId = "deadbeef";
+  networking.nameservers = ["8.8.8.8" "1.1.1.1"];
 
   # setup for eduroam
   environment.etc."NetworkManager/system-connections/eduroam.nmconnection" = {

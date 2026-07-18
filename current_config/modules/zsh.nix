@@ -7,16 +7,22 @@
     syntaxHighlighting.enable = true;
 
     profileExtra = ''
-      if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
-        export DISPLAY=":0"
-        export XAUTHORITY="$HOME/.Xauthority"
+      if [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty1" ]; then
+        export XDG_SESSION_TYPE="wayland"
+        export XDG_CURRENT_DESKTOP="Niri"
+        export XDG_SESSION_DESKTOP="Niri"
         export ELECTRON_OZONE_PLATFORM="wayland"
         export ELECTRON_OZONE_PLATFORM_HINT="auto"
         export QT_QPA_PLATFORM="wayland"
         export GDK_BACKEND="wayland,x11"
-        exec niri --session
-        eval "$(zoxide init zsh)"
+        if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+          exec dbus-run-session niri --session
+        else
+          exec niri --session
+        fi
       fi
+
+      eval "$(zoxide init zsh)"
     '';
 
     shellAliases = {
