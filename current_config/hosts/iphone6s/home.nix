@@ -87,6 +87,60 @@ let
     };
   };
 
+  # Dodo MIDI 2 — free voice-to-MIDI VST3 plugin by Dodo Bird Music
+  # Converts voice/singing into MIDI to control synths.
+  dodo-midi = pkgs.stdenv.mkDerivation rec {
+    pname = "dodo-midi";
+    version = "2.1";
+
+    src = pkgs.fetchurl {
+      url = "https://dodobirdmusic.com/wp-content/uploads/Dodo%20MIDI%202.1%20Linux.vst3.zip";
+      sha256 = "sha256-tiHhXqpZVSO/m0G/wQVPNN8rHYrVEwZaTxl1YJd/eBM=";
+    };
+
+    buildCommand = ''
+      mkdir -p $out/lib/vst3
+      ${pkgs.unzip}/bin/unzip $src
+      cp -r "Dodo MIDI.vst3" $out/lib/vst3/
+    '';
+
+    meta = {
+      description = "Dodo MIDI 2.1 — free voice-to-MIDI VST3 plugin";
+      homepage = "https://dodobirdmusic.com/dodo-midi/";
+      license = pkgs.lib.licenses.unfree;
+      platforms = [ "x86_64-linux" ];
+    };
+  };
+
+  # NeuralNote — free audio-to-MIDI VST3 plugin by DamRsn / DR Audio
+  # Transcribes audio (recorded or imported) into MIDI notes.
+  neuralnote = pkgs.stdenv.mkDerivation rec {
+    pname = "neuralnote";
+    version = "1.1.0";
+
+    src = pkgs.fetchurl {
+      url = "https://github.com/DamRsn/NeuralNote/releases/download/v${version}/NeuralNote_VST3_Linux.zip";
+      sha256 = "074mc2m4zckyarba95rg3iy8c9h6gwc1cpxva40rmmh7lji1yb0c";
+    };
+
+    buildCommand = ''
+      mkdir -p $out/lib/vst3
+      ${pkgs.unzip}/bin/unzip $src
+      for item in *; do
+        if [[ "$item" == *.vst3 ]]; then
+          cp -r "$item" $out/lib/vst3/
+        fi
+      done
+    '';
+
+    meta = {
+      description = "NeuralNote — free audio-to-MIDI VST3 plugin";
+      homepage = "https://github.com/DamRsn/NeuralNote";
+      license = pkgs.lib.licenses.mit;
+      platforms = [ "x86_64-linux" ];
+    };
+  };
+
   wallpapers = builtins.readDir ../../wallpapers;
   isImage = name: builtins.match ".*\\.(jpg|jpeg|png|gif|bmp|webp)" name != null;
   wallpaperList = builtins.filter isImage (builtins.attrNames wallpapers);
@@ -144,6 +198,9 @@ in
     anki
     upscayl
 
+    # DAW
+    reaper # REAPER DAW — audio/MIDI production workstation
+
     # Audio plugins — FOSS, high quality
     lsp-plugins # Huge suite: EQ, dynamics, reverb, multiband, etc.
     guitarix # Virtual guitar amp + effects (standalone & LV2)
@@ -184,6 +241,10 @@ in
     # Samplers
     decent-sampler # Decent Sampler — high-quality sample player (VST2/VST3, free)
     sfizz # sfizz — high-quality SFZ sampler engine (LV2/standalone)
+
+    # Voice/singing to MIDI
+    dodo-midi # Dodo MIDI 2.1 — voice-to-MIDI VST3
+    neuralnote # NeuralNote — audio-to-MIDI VST3
 
     # Sample conversion
     convertwithmoss # Converts Kontakt/SFZ/WAV/etc. to Decent Sampler format

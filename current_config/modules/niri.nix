@@ -13,16 +13,12 @@ let
 
   screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
     set -euo pipefail
-    PICS="$(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)"
-    mkdir -p "$PICS"
-    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" "$PICS/screenshot_$(date +%Y-%m-%d-%H%M%S).png" 2>/tmp/screenshot-area.log
+    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.wl-clipboard}/bin/wl-copy 2>/tmp/screenshot-area.log
   '';
 
   screenshot-full = pkgs.writeShellScriptBin "screenshot-full" ''
     set -euo pipefail
-    PICS="$(${pkgs.xdg-user-dirs}/bin/xdg-user-dir PICTURES)"
-    mkdir -p "$PICS"
-    ${pkgs.grim}/bin/grim "$PICS/screenshot_$(date +%Y-%m-%d-%H%M%S).png" 2>/tmp/screenshot-full.log
+    ${pkgs.grim}/bin/grim - | ${pkgs.wl-clipboard}/bin/wl-copy 2>/tmp/screenshot-full.log
   '';
 in
 {
@@ -30,6 +26,7 @@ in
     wofi
     grim # for screenshots
     slurp # for area selection
+    wl-clipboard # wl-copy for clipboard paste
     xdg-user-dirs # provides xdg-user-dir for screenshot paths
     screenshot-area
     screenshot-full
